@@ -33,7 +33,7 @@ CREATE TABLE Trabajo_aceptado(
 	id_trabajo	INTEGER NOT NULL,
 	id_usuario	INTEGER NOT NULL,
 	fecha_aceptacion	TEXT NOT NULL,
-	estado_trabajo TEXT NOT NULL CHECK("Pendiente", "Terminado"),
+	estado_trabajo TEXT NOT NULL CHECK("Pendiente", "Terminado", "Cancelado"),
 	FOREIGN KEY(id_trabajo) REFERENCES Trabajo(id_trabajo),
 	FOREIGN KEY(id_usuario) REFERENCES Usuario(id_usuario),
 	PRIMARY KEY(id_trabajo, id_usuario)
