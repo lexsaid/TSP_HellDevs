@@ -1,218 +1,75 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trabajos Aceptados | MIZCUIN</title>
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    background: #f1f5f9;
-    font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
-    padding: 32px 20px;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-  }
-
-  .container {
-    max-width: 560px;
-    width: 100%;
-  }
-
-  h1 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 28px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .job-card {
-    background: white;
-    border-radius: 28px;
-    padding: 20px 24px;
-    margin-bottom: 20px;
-    transition: all 0.2s ease;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.03);
-    border: 1px solid #eef2ff;
-  }
-
-  .job-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 20px 30px -12px rgba(0,0,0,0.08);
-    border-color: #cbd5e1;
-  }
-
-  .job-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-  }
-
-  .job-header h3 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #1e293b;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .badge {
-    padding: 5px 14px;
-    border-radius: 40px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-  }
-
-  .badge.pending {
-    background: #fef3c7;
-    color: #b45309;
-    border-left: 3px solid #f59e0b;
-  }
-
-  .badge.done {
-    background: #dcfce7;
-    color: #15803d;
-    border-left: 3px solid #22c55e;
-  }
-
-  .job-info {
-    color: #475569;
-    font-size: 0.85rem;
-    margin: 12px 0;
-    display: flex;
-    gap: 18px;
-    flex-wrap: wrap;
-  }
-
-  .job-info span {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .actions {
-    margin-top: 14px;
-    display: flex;
-    gap: 12px;
-  }
-
-  button {
-    background: transparent;
-    border: 1px solid #cbd5e1;
-    padding: 8px 20px;
-    border-radius: 40px;
-    font-weight: 600;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .btn-primary {
-    background: #5e17eb;
-    border: none;
-    color: white;
-    box-shadow: 0 2px 6px rgba(94,23,235,0.2);
-  }
-  .btn-primary:hover {
-    background: #7c3aed;
-    transform: scale(1.02);
-  }
-
-  .btn-outline:hover {
-    background: #f1f5f9;
-    border-color: #94a3b8;
-  }
-
-  @keyframes fadeSlide {
-    from { opacity: 0; transform: translateY(12px);}
-    to { opacity: 1; transform: translateY(0);}
-  }
-  .job-card {
-    animation: fadeSlide 0.3s ease forwards;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajos Aceptados | MIZCUIN</title>
+    <link rel="stylesheet" href="../css/estilo_traAceptados.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-<div class="container">
-  <h1>📌 Trabajos aceptados</h1>
 
-  <div class="job-card">
-    <div class="job-header">
-      <h3>🐕 Paseo de perro</h3>
-      <span class="badge pending">Pendiente</span>
-    </div>
-    <div class="job-info">
-      <span>📍 Centro, Zona 1</span>
-      <span>💰 $18.000</span>
-      <span>🕒 2:00 PM</span>
-    </div>
-    <div class="actions">
-      <button class="btn-primary">✓ Completar</button>
-      <button class="btn-outline">💬 Contactar</button>
-    </div>
-  </div>
+<div class="app-container">
+    <header class="main-header">
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="header-title">📌 Trabajos aceptados</h1>
+    </header>
 
-  <div class="job-card">
-    <div class="job-header">
-      <h3>🐱 Cuidado de gato</h3>
-      <span class="badge done">Completado</span>
-    </div>
-    <div class="job-info">
-      <span>📍 Chapinero</span>
-      <span>💰 $25.000</span>
-      <span>🕒 9:00 AM - 6:00 PM</span>
-    </div>
-    <div class="actions">
-      <button class="btn-primary" disabled style="opacity:0.6;">✓ Completado</button>
-      <button class="btn-outline">📋 Ver resumen</button>
-    </div>
-  </div>
+    <div class="content">
+        <div id="wrapper">
+            <div class="job-card">
+                <div class="job-header">
+                    <h3>🐕 Paseo de perro</h3>
+                    <span class="badge pending">Pendiente</span>
+                </div>
+                <div class="job-info">
+                    <span><i class="fas fa-map-marker-alt"></i> Centro, Zona 1</span>
+                    <span><i class="fas fa-hand-holding-usd"></i> $18.000</span>
+                    <span><i class="fas fa-clock"></i> 2:00 PM</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-primary btn-complete">✓ Completar</button>
+                    <button class="btn btn-outline">💬 Contactar</button>
+                </div>
+            </div>
 
-  <div class="job-card">
-    <div class="job-header">
-      <h3>🦜 Alimentación aves</h3>
-      <span class="badge pending">Pendiente</span>
+            <div class="job-card">
+                <div class="job-header">
+                    <h3>🐱 Cuidado de gato</h3>
+                    <span class="badge done">Completado</span>
+                </div>
+                <div class="job-info">
+                    <span><i class="fas fa-map-marker-alt"></i> Chapinero</span>
+                    <span><i class="fas fa-hand-holding-usd"></i> $25.000</span>
+                    <span><i class="fas fa-clock"></i> 9:00 AM - 6:00 PM</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-primary" disabled style="opacity:0.6;">✓ Completado</button>
+                    <button class="btn btn-outline">📋 Ver resumen</button>
+                </div>
+            </div>
+
+            <div class="job-card">
+                <div class="job-header">
+                    <h3>🦜 Alimentación aves</h3>
+                    <span class="badge pending">Pendiente</span>
+                </div>
+                <div class="job-info">
+                    <span><i class="fas fa-map-marker-alt"></i> Usaquén</span>
+                    <span><i class="fas fa-hand-holding-usd"></i> $12.000</span>
+                    <span><i class="fas fa-clock"></i> Mañana y tarde</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-primary btn-complete">✓ Completar</button>
+                    <button class="btn btn-outline">💬 Contactar</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="job-info">
-      <span>📍 Usaquén</span>
-      <span>💰 $12.000</span>
-      <span>🕒 Mañana y tarde</span>
-    </div>
-    <div class="actions">
-      <button class="btn-primary">✓ Completar</button>
-      <button class="btn-outline">💬 Contactar</button>
-    </div>
-  </div>
 </div>
 
-<script>
-  document.querySelectorAll('.btn-primary:not([disabled])').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const card = btn.closest('.job-card');
-      const badge = card.querySelector('.badge');
-      badge.textContent = 'Completado';
-      badge.classList.remove('pending');
-      badge.classList.add('done');
-      btn.textContent = '✓ Completado';
-      btn.disabled = true;
-      btn.style.opacity = '0.6';
-      alert('¡Trabajo marcado como completado!');
-    });
-  });
-</script>
+<script src="../js/trabajosAceptados.js"></script>
 </body>
 </html>
