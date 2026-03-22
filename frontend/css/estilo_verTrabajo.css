@@ -1,0 +1,115 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #FAF7F7; /* El color de fondo que quieres */
+    display: block; /* Cambia de flex a block si quieres que el contenido fluya normal */
+}
+
+/* Busca el contenedor que envuelve todo */
+.card-detalle, .mobile-container {
+    width: 100%;       /* Asegura que ocupe el 100% del ancho */
+    max-width: none;   /* ELIMINA cualquier max-width que diga 400px o similar */
+    min-height: 100vh; /* Que ocupe todo el largo de la pantalla */
+    margin: 0;         /* Quita los márgenes automáticos */
+    border-radius: 0;  /* Quita los bordes redondeados de las esquinas exteriores si quieres que pegue al borde */
+    border: none;      /* Quita cualquier borde gris que esté haciendo de marco */
+}
+
+/* Header */
+.header-detalle {
+    background-color: #6a96f1;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.back-link {
+    color: white;
+    font-size: 1.5rem;
+    margin-right: 20px;
+    text-decoration: none;
+}
+
+.titulo-app {
+    font-size: 1.4rem;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+/* Imagen */
+.imagen-container {
+    width: 90%;
+    margin: 15px auto;
+}
+
+.img-trabajo {
+    width: 100%;
+    border-radius: 10px;
+    display: block;
+}
+
+/* Cajas de Texto (Estilo Referencia) */
+.info-container {
+    padding: 0 20px;
+}
+
+.info-box {
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: #fff;
+    color: #333;
+    font-weight: 500;
+}
+
+.desc-box {
+    min-height: 100px;
+}
+
+.location-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icon-map { color: #ccc; }
+
+.row-info {
+    display: flex;
+    gap: 10px;
+}
+
+.half { width: 50%; font-size: 0.85rem; }
+
+.timer-box {
+    text-align: center;
+    width: 60%;
+    margin: 20px auto;
+}
+
+/* Botones Inferiores */
+.footer-acciones {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background: #f1f1f1;
+}
+
+.btn-aceptar, .btn-contactar {
+    width: 45%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    background-color: #3b66ad; /* Azul de tu referencia */
+}
+
+.btn-aceptar:active, .btn-contactar:active {
+    transform: scale(0.95);
+}

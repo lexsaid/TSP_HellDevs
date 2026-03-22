@@ -1,170 +1,173 @@
-:root{
+/* ========== RESET Y ESTILOS GLOBALES ========== */
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
-
-body {
-    background-color: #FAF7F7; 
-    font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 24px 16px;
-    margin: 0; /* Aseguramos que no haya márgenes extra */
-    
 }
 
+body {
+    /* Color de fondo suave uniforme para toda la app MIZCUIN */
+    background-color: #FAF7F7; 
+    font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
+    /* Eliminamos el centrado flex para que ocupe todo el ancho desde arriba */
+    display: block; 
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* ========== CONTENEDOR PRINCIPAL (PANTALLA COMPLETA) ========== */
 .card {
-    max-width: 540px;
-    width: 100%;
-    background: white;
-    border-radius: 36px;
-    padding: 32px 28px;
-    box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
-    transition: all 0.3s;
+    width: 100%;       /* Ocupa todo el ancho del celular */
+    max-width: none;   /* Eliminamos cualquier restricción de ancho */
+    background-color: #FAF7F7; 
+    min-height: 100vh;
+    padding: 20px;     /* Espacio interno para que el contenido no toque los bordes */
+    border-radius: 0;  /* Sin esquinas redondeadas exteriores */
+    box-shadow: none;  /* Sin sombra exterior para que no parezca una tarjeta flotante */
     animation: fadeUp 0.5s ease;
 }
 
-  @keyframes fadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-  /* Estilo para el botón de regreso */
+/* ========== BOTÓN DE REGRESO ========== */
 .back-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: #f1f5f9; /* Un gris muy claro */
-    color: #5e17eb;      /* El morado de tu tema */
+    width: 45px;
+    height: 45px;
+    background: white;
+    color: #5e17eb;
     border-radius: 50%;
     text-decoration: none;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
 }
 
-.back-btn:hover {
-    background: #5e17eb;
-    color: white;
-    transform: translateX(-5px); /* Pequeño salto a la izquierda */
+.back-btn:active {
+    transform: scale(0.9);
 }
 
-.back-btn i {
-    font-size: 1.1rem;
-}
-
-/* Ajuste opcional para el título si sientes que queda muy pegado */
+/* ========== TÍTULO DE LA SECCIÓN ========== */
 h2 {
-    margin-top: 5px;
-}
-
-  h2 {
-    font-size: 1.9rem;
+    font-size: 1.8rem;
     font-weight: 800;
     background: linear-gradient(135deg, #5e17eb, #8b5cf6);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+    padding-left: 5px;
     display: flex;
     align-items: center;
-    gap: 12px;
-  }
-
-  .form-group {
-    margin-bottom: 20px;
-  }
-
-  label {
-    font-weight: 600;
-    font-size: 0.85rem;
-    display: block;
-    margin-bottom: 6px;
-    color: #1e293b;
-    letter-spacing: -0.2px;
-  }
-
-  input, select, textarea {
-    width: 100%;
-    padding: 14px 16px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-family: inherit;
-    transition: all 0.2s;
-    background: #fefefe;
-    outline: none;
-  }
-
-  input:focus, select:focus, textarea:focus {
-    border-color: #5e17eb;
-    box-shadow: 0 0 0 3px rgba(94, 23, 235, 0.2);
-  }
-
-  textarea {
-    resize: vertical;
-    min-height: 90px;
-  }
-
-  .file-input {
-    padding: 10px 0;
-  }
-  .file-input input {
-    padding: 12px;
-    background: #f1f5f9;
-  }
-
-  .image-preview {
-    display: flex;
     gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
-  .preview-img {
-    width: 70px;
-    height: 70px;
-    object-fit: cover;
-    border-radius: 16px;
-    border: 2px solid #e2e8f0;
-  }
+}
 
-  button {
+/* ========== ESTILO DEL FORMULARIO ========== */
+#postForm {
+    background: white;
+    padding: 25px 20px;
+    border-radius: 30px; /* El formulario sí tiene bordes redondeados para resaltar */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 8px;
+    color: #1e293b;
+    padding-left: 5px;
+}
+
+input, select, textarea {
     width: 100%;
-    padding: 16px;
+    padding: 14px 18px;
+    border: 1.5px solid #f1f5f9;
+    border-radius: 18px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: #f8fafc; /* Gris muy suave para los campos */
+    outline: none;
+    transition: all 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #5e17eb;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(94, 23, 235, 0.1);
+}
+
+textarea {
+    resize: none;
+    min-height: 100px;
+}
+
+/* ========== VISTA PREVIA DE IMÁGENES ========== */
+.image-preview {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.preview-item {
+    position: relative;
+    width: 75px;
+    height: 75px;
+}
+
+.preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 2px solid #5e17eb;
+}
+
+.close-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+/* ========== BOTÓN PRINCIPAL ========== */
+button[type="submit"] {
+    width: 100%;
+    padding: 18px;
     background: linear-gradient(95deg, #5e17eb, #7c3aed);
     border: none;
-    border-radius: 40px;
+    border-radius: 25px;
     color: white;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: all 0.25s;
-    margin-top: 12px;
-    box-shadow: 0 8px 18px rgba(94, 23, 235, 0.25);
-  }
+    margin-top: 15px;
+    box-shadow: 0 8px 20px rgba(94, 23, 235, 0.3);
+    transition: all 0.3s;
+}
 
-  button:hover {
-    transform: scale(1.02);
-    background: linear-gradient(95deg, #6d28d9, #8b5cf6);
-    box-shadow: 0 12px 22px rgba(94, 23, 235, 0.3);
-  }
-  button:active {
-    transform: scale(0.98);
-  }
-
-  hr {
-    margin: 18px 0;
-    border: none;
-    height: 1px;
-    background: linear-gradient(to right, #e2e8f0, transparent);
-  }
+button[type="submit"]:active {
+    transform: scale(0.96);
+}

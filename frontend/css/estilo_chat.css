@@ -1,0 +1,169 @@
+/* ========== RESET Y ESTILOS GLOBALES ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  /* Usamos el color de fondo suave de MIZCUIN para coherencia */
+  background-color: #FAF7F7; 
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  /* Eliminamos el flex y padding para que no se vea como una tarjeta flotante */
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* ========== CONTENEDOR PANTALLA COMPLETA ========== */
+.chat {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh; /* Ocupa todo el alto del dispositivo */
+  background: white;
+}
+
+/* ========== CABECERA (Header) ========== */
+header {
+  /* Azul consistente con la pantalla de Servicios y Detalles */
+  background-color: #6a96f1; 
+  padding: 15px 20px;
+  color: white;
+  font-weight: 700;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  /* Sombra sutil para dar profundidad */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.back-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+}
+
+/* ========== ÁREA DE MENSAJES ========== */
+.messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* Fondo con el gris/blanco suave de la app */
+  background-color: #FAF7F7; 
+}
+
+.msg {
+  max-width: 80%; /* Para que no ocupen todo el ancho en pantallas grandes */
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  position: relative;
+  animation: fadeSlideUp 0.3s ease;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mis mensajes (Verde) */
+.me {
+  background-color: #22c55e;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+/* Mensajes de otros (Gris/Azulado) */
+.other {
+  background-color: #FFFFFF;
+  color: #1e293b;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ========== ÁREA DE ENTRADA DE TEXTO ========== */
+.input-area {
+  background: white;
+  padding: 15px 20px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  /* Espacio extra abajo para que no choque con la barra de gestos del celular */
+  padding-bottom: 25px; 
+}
+
+/* Botón de Adjuntar (+) */
+.attachment-btn {
+  background: #f1f5f9;
+  color: #64748b;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%; /* Más redondeado para estilo móvil */
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.attachment-btn:active {
+  background: #e2e8f0;
+}
+
+/* Input de texto */
+.input-area input[type="text"] {
+  flex: 1;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 25px; /* Bordes muy redondeados tipo WhatsApp/Messenger */
+  padding: 12px 20px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-area input[type="text"]:focus {
+  border-color: #6a96f1;
+}
+
+/* Botón de enviar (Flecha) */
+.send-btn {
+  background-color: #5e17eb; /* Morado distintivo de tus botones */
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  background: 0.2s;
+}
+
+.send-btn:active {
+  transform: scale(0.9);
+  background-color: #4c11c9;
+}
+
+/* Ocultar input de archivo */
+#fileInput {
+  display: none;
+}
