@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat | MIZCUIN</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #f1f5f9; /* mismo fondo que en trabajos aceptados */
+    font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  .chat {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 20px 35px -10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+
+  header {
+    background: white;
+    padding: 18px 20px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    border-bottom: 2px solid #5e17eb; /* línea morada como acento */
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  header::before {
+    content: "🐾";
+    font-size: 1.4rem;
+  }
+
+  .messages {
+    flex: 1;
+    padding: 20px 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scroll-behavior: smooth;
+    background: #fefefe;
+  }
+
+  .msg {
+    max-width: 80%;
+    padding: 10px 16px;
+    border-radius: 22px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-break: break-word;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    transition: transform 0.1s ease;
+    animation: fadeSlideUp 0.25s ease;
+  }
+
+  @keyframes fadeSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .me {
+    background: #22c55e; /* verde igual que en botones de completar */
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 6px;
+  }
+
+  .other {
+    background: #eef2ff; /* gris muy claro con tono violeta suave */
+    color: #1e293b;
+    align-self: flex-start;
+    border-bottom-left-radius: 6px;
+  }
+
+  .input-area {
+    background: white;
+    padding: 14px 16px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .input-area input {
+    flex: 1;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 40px;
+    padding: 12px 18px;
+    color: #0f172a;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .input-area input:focus {
+    border-color: #5e17eb;
+    box-shadow: 0 0 0 2px rgba(94, 23, 235, 0.2);
+  }
+
+  .input-area input::placeholder {
+    color: #94a3b8;
+  }
+
+  .input-area button {
+    background: #5e17eb; /* morado principal */
+    border: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(94, 23, 235, 0.3);
+  }
+
+  .input-area button:hover {
+    background: #7c3aed;
+    transform: scale(1.02);
+  }
+
+  .input-area button:active {
+    transform: scale(0.96);
+  }
+
+  /* scroll bonito */
+  .messages::-webkit-scrollbar {
+    width: 5px;
+  }
+  .messages::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  .messages::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+  }
+</style>
+</head>
+<body>
+<div class="chat">
+  <header>Chat del trabajo</header>
+  <div class="messages" id="msgs">
+    <div class="msg other">¿Sigues disponible?</div>
+    <div class="msg me">Sí 👍</div>
+  </div>
+  <div class="input-area">
+    <input type="text" id="txt" placeholder="Escribe un mensaje..." autocomplete="off">
+    <button id="sendBtn" aria-label="Enviar mensaje">➤</button>
+  </div>
+</div>
+
+<script>
+  const msgsContainer = document.getElementById('msgs');
+  const inputField = document.getElementById('txt');
+  const sendButton = document.getElementById('sendBtn');
+
+  function sendMessage() {
+    let text = inputField.value.trim();
+    if (text === "") return;
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'msg me';
+    messageDiv.textContent = text;
+    msgsContainer.appendChild(messageDiv);
+    
+    inputField.value = "";
+    msgsContainer.scrollTop = msgsContainer.scrollHeight;
+  }
+
+  sendButton.addEventListener('click', sendMessage);
+  inputField.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
+</script>
+</body>
+</html>
