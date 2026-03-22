@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  # Servicio para el Inventario
+  mizcui-api:
+    build: 
+      context: ./app
+    container_name: mizcui_api
+    ports:
+      - "8080:40000"
+    volumes:
+      - ./app:/app
+    environment:
+      - DB_PATH=/app/app/MIZCUIN.db
+    restart: always
