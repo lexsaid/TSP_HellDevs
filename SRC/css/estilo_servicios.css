@@ -1,0 +1,95 @@
+:root {
+    --primary-blue: #6495ED;
+    --filter-gray: #E0E8F5;
+    --bg-white: #FAF7F7;
+    --text-dark: #333333;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-white);
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Evita scrolls raros en el body */
+}
+
+.mobile-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- HEADER --- */
+.main-header {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-icon {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.page-title {
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.add-icon {
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* --- FILTRO --- */
+.filter-section {
+    background-color: var(--filter-gray);
+    padding: 12px 20px;
+    color: #555;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #c0cfe0;
+}
+
+/* --- ESTADO VACÍO (Cuando no hay tarjetas) --- */
+.content-list {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.empty-state {
+    text-align: center;
+    color: #A0A0A0;
+}
+
+.empty-state i {
+    font-size: 80px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.empty-state span {
+    font-size: 14px;
+}

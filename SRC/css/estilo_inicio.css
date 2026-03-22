@@ -1,0 +1,98 @@
+/* Definición de variables de color para facilitar cambios */
+:root {
+    --primary-blue: #6495ED;    /* Azul del encabezado */
+    --light-blue: #D0E0FF;      /* Azul claro de las pestañas */
+    --bg-white: #FAF7F7;        /* Fondo ligeramente rosado/blanco */
+    --text-dark: #333333;       /* Color de texto principal */
+    --icon-gray: #A0A0A0;       /* Color gris de la huella */
+}
+
+/* Reseteo básico para que no haya márgenes extraños */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f0f0f0;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Contenedor que simula la pantalla de un celular */
+.mobile-container {
+    width: 100%;           /* Ocupa todo el ancho disponible */
+    height: 100vh;         /* Ocupa todo el alto de la pantalla del celular */
+    background-color: var(--bg-white);
+    display: flex;
+    flex-direction: column;
+    /* Quitamos el border y el border-radius para que no parezca "cuadro" */
+}
+
+/* Estilo del Header Azul */
+.main-header {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.app-title {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 400;
+}
+
+/* Estilo de las pestañas (Tabs) */
+.sub-nav {
+    display: flex;
+    background-color: var(--light-blue);
+}
+
+.nav-item {
+    flex: 1; /* Hace que ambos botones midan lo mismo */
+    padding: 10px;
+    border: none;
+    background: transparent;
+    color: var(--text-dark);
+    font-size: 14px;
+    cursor: pointer;
+    border-right: 1px solid #b0c4de; /* Línea divisoria suave */
+}
+
+.nav-item:last-child {
+    border-right: none;
+}
+
+/* Área central de bienvenida */
+.welcome-screen {
+    flex-grow: 1; /* Ocupa todo el espacio restante */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-container {
+    font-size: 120px; /* Tamaño de la huella */
+    color: var(--icon-gray);
+    margin-bottom: 20px;
+}
+
+.welcome-text {
+    font-size: 32px;
+    color: var(--text-dark);
+    font-weight: 300;
+}
