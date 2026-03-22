@@ -3,38 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PetSanity - Servicios</title>
-    
+    <title>Servicios</title>
+
     <link rel="stylesheet" href="../css/estilo_servicios.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="mobile-container">
-        <header class="main-header">
-            <a href="inicio.html" class="back-icon">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <h1 class="page-title">Servicios</h1>
-            <div class="add-icon">
-                <i class="fas fa-plus"></i>
-            </div>
-        </header>
+<div class="mobile-container">
 
-        <section class="filter-section">
-            <span class="filter-text">Trabajos</span>
-            <i class="fas fa-chevron-down dropdown-icon"></i>
-        </section>
+    <!-- HEADER -->
+    <header class="main-header">
+        <i class="fas fa-arrow-left"></i>
+        <h1>Servicios</h1>
+        <i class="fas fa-plus"></i>
+    </header>
 
-        <main class="content-list">
-            <div class="empty-state">
-                <i class="fas fa-paw"></i>
-                <p>No hay servicios disponibles por el momento.</p>
-                <span>¡Vuelve más tarde o publica uno nuevo!</span>
-            </div>
-        </main>
+    <!-- FILTRO -->
+    <div class="filter-section">
+        <span>Trabajos</span>
+        <i class="fas fa-chevron-down"></i>
     </div>
 
+    <!-- ESTADO VACÍO -->
+    <div class="empty-state" id="emptyState">
+        <i class="fas fa-paw paw-icon"></i>
+        <h2>No hay servicios disponibles por el momento.</h2>
+        <p>¡Vuelve más tarde o publica uno nuevo!</p>
+    </div>
+
+    <!-- LISTA DE TRABAJOS -->
+    <main class="content-list" id="jobList">
+
+        <!-- TARJETA (ejemplo, luego será dinámico) -->
+        <article class="job-card">
+            <img src="https://via.placeholder.com/300x180" class="job-image">
+
+            <div class="card-details">
+                <div class="info-row">
+                    <div class="main-info">
+                        <p>Trabajo: <span>Limpieza</span></p>
+                        <p>Pago: <span>$200</span></p>
+                        <p>Ubicación: <span>Por ahí 201</span></p>
+                    </div>
+
+                    <div class="expiry-timer">
+                        Expira en
+                        <span class="time-left">02:15:30</span>
+                    </div>
+                </div>
+
+                <button class="btn-more">Ver más</button>
+            </div>
+        </article>
+
+    </main>
+
+</div>
+
+<script src="../js/servicios.js"></script>
 </body>
 </html>
