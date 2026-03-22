@@ -9,29 +9,44 @@
 </head>
 <body>
 
+    <div id="menuOverlay" class="menu-overlay"></div>
+
+    <div id="sideMenu" class="side-menu">
+        <div class="menu-header-profile">
+            <i class="fas fa-user-circle"></i>
+            <span>Mi Cuenta</span>
+        </div>
+        <nav class="menu-items">
+            <a href="mis_publicaciones.html"><i class="fas fa-paw"></i> Mis Publicaciones</a>
+            <a href="trabajos_aceptados.html"><i class="fas fa-cog"></i> Mis Trabajos Aceptados</a>
+            <hr>
+            <a href="login.html" id="btnLogout" class="logout-link">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </nav>
+    </div>
+
     <div class="mobile-container">
         <header class="main-header">
-            <div class="menu-icon">
-                <i class="fas fa-bars"></i> </div>
+            <div class="menu-icon" id="openMenu">
+                <i class="fas fa-bars"></i> 
+            </div>
             <h1 class="app-title">MIZCUIN</h1>
         </header>
 
         <nav class="sub-nav">
-            <a href="servicios.html" class="nav-item" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                Servicios
-            </a>
-            
-            <a href="" class="nav-item" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                Comunidad
-            </a>
+            <a href="servicios.html" class="nav-item">Servicios</a>
+            <a href="#" class="nav-item">Comunidad</a>
         </nav>
 
         <main class="welcome-screen">
             <div class="icon-container">
-                <i class="fas fa-paw"></i> </div>
+                <i class="fas fa-paw"></i> 
+            </div>
             <h2 class="welcome-text">Bienvenido</h2>
         </main>
     </div>
 
+    <script src="../js/inicio.js"></script>
 </body>
 </html>

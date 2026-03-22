@@ -1,0 +1,165 @@
+/* ========== CONFIGURACIÓN GENERAL ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #FAF7F7; /* Fondo oficial de la app */
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px 10px; /* Un poco más de margen para móvil */
+}
+
+.registro-container {
+    width: 100%;
+    max-width: 480px; /* Un poco más ancho para las columnas */
+    animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== ÁREA DEL ENCABEZADO Y LOGO ========== */
+.registro-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-left: 5px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: white;
+    color: #6a96f1; /* Azul de tu tema decorativo */
+    border-radius: 50%;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+}
+
+.back-link:active { transform: scale(0.9); }
+
+.registro-header h1 {
+    font-size: 1.8rem;
+    color: #1e293b;
+    font-weight: 800;
+}
+
+/* ========== FORMULARIO ========== */
+.form-area {
+    background: white;
+    padding: 35px 30px;
+    border-radius: 35px; /* Bordes muy redondeados */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+}
+
+.form-area h2 {
+    font-size: 1.5rem;
+    color: #1e293b;
+    margin-bottom: 10px;
+}
+
+.form-area p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+}
+
+/* Fila de Nombre y Apellido */
+.row-inputs {
+    display: flex;
+    gap: 15px;
+}
+
+.row-inputs .input-group {
+    flex: 1; /* Ocupan 50% cada uno */
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1e293b;
+    margin-bottom: 8px;
+    margin-left: 5px;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 15px;
+    color: #94a3b8;
+    font-size: 1rem;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 14px 15px 14px 45px; /* Relleno extra a la izquierda para el icono */
+    background: #f8fafc;
+    border: 2.3px solid #f1f5f9;
+    border-radius: 18px;
+    outline: none;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+/* Estilo al hacer foco */
+.input-wrapper input:focus {
+    border-color: #5e17eb; /* Morado al hacer foco */
+    background: white;
+    box-shadow: 0 0 0 4px rgba(94, 23, 235, 0.1);
+}
+
+/* ========== BOTÓN Y LINKS ========== */
+.btn-registro {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(95deg, #5e17eb, #7c3aed);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(94, 23, 235, 0.3);
+    transition: all 0.3s;
+    margin-top: 15px;
+}
+
+.btn-registro:active {
+    transform: scale(0.97);
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.login-link a {
+    color: #5e17eb;
+    text-decoration: none;
+    font-weight: 700;
+}

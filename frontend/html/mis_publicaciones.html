@@ -1,265 +1,59 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mis Publicaciones | MIZCUIN</title>
-<style>
-  /* ========== ESTILOS GENERALES ========== */
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: #f1f5f9;
-    font-family: 'Segoe UI', sans-serif;
-    padding: 20px 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .container { max-width: 580px; width: 100%; }
-
-  .header-sticky {
-    position: sticky;
-    top: 0;
-    background: #f1f5f9;
-    padding: 20px 0;
-    z-index: 100;
-    border-bottom: 1px solid #e2e8f0;
-    margin-bottom: 20px;
-  }
-
-  h1 {
-    font-size: 1.6rem;
-    color: #0f172a;
-    border-left: 5px solid #5e17eb;
-    padding-left: 15px;
-  }
-
-  /* ========== TARJETAS ========== */
-  .card {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    border: 1px solid #e2e8f0;
-    transition: 0.3s;
-  }
-
-  .status {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-  }
-  .status.active { background: #fef9c3; color: #854d0e; }
-  .status.completed { background: #dcfce7; color: #15803d; }
-  .status.inactive { background: #fee2e2; color: #b91c1c; }
-
-  /* ========== CONTADOR ========== */
-  .timer-box {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
-    color: #475569;
-    background: #f8fafc;
-    padding: 8px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    display: inline-block;
-  }
-  .timer-urgent { color: #dc2626; font-weight: bold; background: #fff1f2; border: 1px solid #fecaca; }
-
-  /* ========== BOTONES ========== */
-  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  button {
-    border: none;
-    padding: 10px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 0.8rem;
-    cursor: pointer;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-  }
-  .btn-details { background: #f1f5f9; color: #475569; }
-  .btn-complete { background: #22c55e; color: white; }
-  .btn-deactivate { background: #ef4444; color: white; }
-  .btn-extend { background: #5e17eb; color: white; display: none; } /* Oculto por defecto */
-
-  button:disabled { opacity: 0.3; cursor: not-allowed; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Publicaciones | MIZCUIN</title>
+    <link rel="stylesheet" href="../css/estilo_misPublicaciones.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-<div class="container">
-  <div class="header-sticky">
-    <h1>📋 Mis publicaciones</h1>
-  </div>
+<div class="app-container">
+    <header class="main-header">
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="header-title">Mis Publicaciones</h1>
+    </header>
 
-  <div id="wrapper">
-    <div class="card" data-seconds="86400">
-      <h3>🐱 Cuidado de Gato Persa</h3>
-      <span class="status active">● Activo</span><br>
-      <div class="timer-box">⏳ Expira en: <span class="timer-display">24:00:00</span></div>
-      <div class="actions">
-        <button class="btn-details">🔍 Detalles</button>
-        <button class="btn-complete">✓ Completar</button>
-        <button class="btn-deactivate">🗑 Dar de baja</button>
-        <button class="btn-extend">➕ Extender Plazo</button>
-      </div>
-    </div>
+    <div class="content">
+        <div class="section-info">
+            <p>Administra tus trabajos activos y el tiempo restante.</p>
+        </div>
 
-    <div class="card" data-seconds="3540">
-      <h3>🐕 Paseo Husky Siberiano</h3>
-      <span class="status active">● Activo</span><br>
-      <div class="timer-box">⏳ Expira en: <span class="timer-display">00:59:00</span></div>
-      <div class="actions">
-        <button class="btn-details">🔍 Detalles</button>
-        <button class="btn-complete">✓ Completar</button>
-        <button class="btn-deactivate">🗑 Dar de baja</button>
-        <button class="btn-extend">➕ Extender Plazo</button>
-      </div>
-    </div>
+        <div id="wrapper">
+            <div class="card" data-seconds="86400">
+                <h3>🐱 Cuidado de Gato Persa</h3>
+                <span class="status active">● Activo</span>
+                <div class="timer-box">
+                    <i class="far fa-clock"></i> Expira en: <span class="timer-display">24:00:00</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-details"><i class="fas fa-search"></i> Detalles</button>
+                    <button class="btn btn-complete"><i class="fas fa-check"></i> Completar</button>
+                    <button class="btn btn-deactivate"><i class="fas fa-trash"></i> Baja</button>
+                    <button class="btn btn-extend"><i class="fas fa-plus"></i> Extender 24h</button>
+                </div>
+            </div>
 
-    <div class="card" data-seconds="86400">
-      <h3>🦜 Limpieza de Jaula</h3>
-      <span class="status active">● Activo</span><br>
-      <div class="timer-box">⏳ Expira en: <span class="timer-display">24:00:00</span></div>
-      <div class="actions">
-        <button class="btn-details">🔍 Detalles</button>
-        <button class="btn-complete">✓ Completar</button>
-        <button class="btn-deactivate">🗑 Dar de baja</button>
-        <button class="btn-extend">➕ Extender Plazo</button>
-      </div>
+            <div class="card" data-seconds="3540">
+                <h3>🐕 Paseo Husky Siberiano</h3>
+                <span class="status active">● Activo</span>
+                <div class="timer-box">
+                    <i class="far fa-clock"></i> Expira en: <span class="timer-display">00:59:00</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-details"><i class="fas fa-search"></i> Detalles</button>
+                    <button class="btn btn-complete"><i class="fas fa-check"></i> Completar</button>
+                    <button class="btn btn-deactivate"><i class="fas fa-trash"></i> Baja</button>
+                    <button class="btn btn-extend"><i class="fas fa-plus"></i> Extender 24h</button>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="card" data-seconds="43200">
-      <h3>🐢 Alimentación Tortugas</h3>
-      <span class="status active">● Activo</span><br>
-      <div class="timer-box">⏳ Expira en: <span class="timer-display">12:00:00</span></div>
-      <div class="actions">
-        <button class="btn-details">🔍 Detalles</button>
-        <button class="btn-complete">✓ Completar</button>
-        <button class="btn-deactivate">🗑 Dar de baja</button>
-        <button class="btn-extend">➕ Extender Plazo</button>
-      </div>
-    </div>
-
-    <div class="card" data-seconds="86400">
-      <h3>🐠 Filtros de Acuario</h3>
-      <span class="status active">● Activo</span><br>
-      <div class="timer-box">⏳ Expira en: <span class="timer-display">24:00:00</span></div>
-      <div class="actions">
-        <button class="btn-details">🔍 Detalles</button>
-        <button class="btn-complete">✓ Completar</button>
-        <button class="btn-deactivate">🗑 Dar de baja</button>
-        <button class="btn-extend">➕ Extender Plazo</button>
-      </div>
-    </div>
-
-    <div class="card" data-seconds="86400">
-      <h3>🐇 Peinado de Conejo</h3>
-      <span class="status active">● Activo</span><br>
-      <div class="timer-box">⏳ Expira en: <span class="timer-display">24:00:00</span></div>
-      <div class="actions">
-        <button class="btn-details">🔍 Detalles</button>
-        <button class="btn-complete">✓ Completar</button>
-        <button class="btn-deactivate">🗑 Dar de baja</button>
-        <button class="btn-extend">➕ Extender Plazo</button>
-      </div>
-    </div>
-  </div>
 </div>
 
-<script>
-  // Lógica del Temporizador
-  document.querySelectorAll('.card').forEach(card => {
-    let seconds = parseInt(card.getAttribute('data-seconds'));
-    const display = card.querySelector('.timer-display');
-    const statusSpan = card.querySelector('.status');
-    const btnExtend = card.querySelector('.btn-extend');
-
-    const countdown = setInterval(() => {
-      if (!statusSpan.classList.contains('active')) {
-        clearInterval(countdown);
-        return;
-      }
-
-      seconds--;
-      
-      // Formateo
-      let h = Math.floor(seconds / 3600).toString().padStart(2, '0');
-      let m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
-      let s = (seconds % 60).toString().padStart(2, '0');
-      display.textContent = `${h}:${m}:${s}`;
-
-      // Lógica de extensión: Solo si falta menos de 1 hora (3600s)
-      if (seconds < 3600 && seconds > 0) {
-        display.parentElement.classList.add('timer-urgent');
-        btnExtend.style.display = 'inline-flex'; // Mostrar botón de extensión
-      }
-
-      if (seconds <= 0) {
-        clearInterval(countdown);
-        autoExpire(card);
-      }
-    }, 1000);
-  });
-
-  function autoExpire(card) {
-    const statusSpan = card.querySelector('.status');
-    statusSpan.textContent = '○ Expirado';
-    statusSpan.className = 'status inactive';
-    card.querySelector('.timer-display').textContent = "00:00:00";
-    disableCard(card);
-    
-    // Notificación automática de extensión al expirar
-    if(confirm("El tiempo ha terminado. ¿Deseas extender el plazo por 24h más?")) {
-      alert("Plazo extendido. La página se actualizará.");
-      location.reload();
-    }
-  }
-
-  function disableCard(card) {
-    card.querySelectorAll('button:not(.btn-details, .btn-extend)').forEach(b => b.disabled = true);
-  }
-
-  // Eventos de botones
-  document.querySelectorAll('.btn-complete').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const card = btn.closest('.card');
-      const st = card.querySelector('.status');
-      st.textContent = '✓ Completado';
-      st.className = 'status completed';
-      disableCard(card);
-      alert("Actividad completada. Se ha dado de baja automáticamente.");
-    });
-  });
-
-  document.querySelectorAll('.btn-deactivate').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if(confirm("¿Seguro que deseas dar de baja esta publicación?")) {
-        const card = btn.closest('.card');
-        const st = card.querySelector('.status');
-        st.textContent = '○ Dado de baja';
-        st.className = 'status inactive';
-        disableCard(card);
-      }
-    });
-  });
-
-  document.querySelectorAll('.btn-extend').forEach(btn => {
-    btn.addEventListener('click', () => {
-      alert("Se ha solicitado la extensión de 24 horas correctamente.");
-      location.reload();
-    });
-  });
-</script>
-
+<script src="../js/misPublicaciones.js"></script>
 </body>
 </html>

@@ -1,0 +1,146 @@
+/* ========== CONFIGURACIÓN GENERAL ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #FAF7F7; /* Fondo oficial MIZCUIN */
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== ÁREA DEL LOGO ========== */
+.logo-area {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo-area i {
+    font-size: 3.5rem;
+    color: #6a96f1; /* Azul del header */
+    margin-bottom: 10px;
+}
+
+.logo-area h1 {
+    font-size: 2rem;
+    color: #1e293b;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.logo-area p {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* ========== FORMULARIO ========== */
+form {
+    background: white;
+    padding: 35px 30px;
+    border-radius: 35px; /* Bordes redondeados consistentes */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1e293b;
+    margin-bottom: 8px;
+    margin-left: 5px;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 15px;
+    color: #94a3b8;
+    font-size: 1rem;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 14px 15px 14px 45px;
+    background: #f8fafc;
+    border: 2.3px solid #f1f5f9;
+    border-radius: 18px;
+    outline: none;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.input-wrapper input:focus {
+    border-color: #5e17eb; /* Morado al hacer foco */
+    background: white;
+    box-shadow: 0 0 0 4px rgba(94, 23, 235, 0.1);
+}
+
+/* ========== LINKS Y BOTÓN ========== */
+.forgot-pass {
+    text-align: right;
+    margin-bottom: 25px;
+}
+
+.forgot-pass a {
+    color: #6a96f1;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(95deg, #5e17eb, #7c3aed);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(94, 23, 235, 0.3);
+    transition: all 0.3s;
+}
+
+.btn-login:active {
+    transform: scale(0.97);
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.register-link a {
+    color: #5e17eb;
+    text-decoration: none;
+    font-weight: 700;
+}

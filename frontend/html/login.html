@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - MIZCUIN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/estilo_login.css">
+</head>
+<body>
+
+<div class="login-container">
+    <div class="logo-area">
+        <i class="fas fa-paw"></i>
+        <h1>MIZCUIN</h1>
+        <p>Tu comunidad de mascotas</p>
+    </div>
+
+    <form id="loginForm">
+        <div class="input-group">
+            <label>Correo electrónico</label>
+            <div class="input-wrapper">
+                <i class="fas fa-envelope"></i>
+                <input type="email" placeholder="ejemplo@correo.com" required>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Contraseña</label>
+            <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="••••••••" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login">Entrar</button>
+
+        <div class="register-link">
+            ¿No tienes cuenta? <a href="register.html">Regístrate aquí</a>
+        </div>
+    </form>
+</div>
+
+<script src="../js/login.js"></script>
+
+</body>
+</html>

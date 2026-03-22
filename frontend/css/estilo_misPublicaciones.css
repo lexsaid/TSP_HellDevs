@@ -1,0 +1,138 @@
+/* ========== ESTILOS GENERALES ========== */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body {
+    background: #e2e8f0; /* Color de fondo externo para que resalte la "App" */
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.app-container {
+    max-width: 450px; 
+    width: 100%;
+    background: white;
+    min-height: 100vh;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== HEADER FIJO ========== */
+.main-header {
+    background-color: #6a96f1;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.back-btn {
+    color: white;
+    font-size: 1.2rem;
+    text-decoration: none;
+    margin-right: 15px;
+}
+
+.header-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* ========== CONTENIDO ========== */
+.content { 
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.section-info {
+    margin-bottom: 20px;
+    border-left: 4px solid #6a96f1;
+    padding-left: 10px;
+}
+
+/* ========== TARJETAS ========== */
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+.card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #334155;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.status.active { background: #fef9c3; color: #854d0e; }
+.status.completed { background: #dcfce7; color: #15803d; }
+.status.inactive { background: #fee2e2; color: #b91c1c; }
+
+.timer-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.timer-display { font-family: monospace; font-weight: bold; }
+
+.timer-urgent { background: #fff1f2; color: #e11d48; border: 1px solid #fecaca; }
+
+/* ========== BOTONES ========== */
+.actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.btn {
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.btn-details { background: #f1f5f9; color: #475569; grid-column: span 2; }
+.btn-complete { background: #22c55e; color: white; }
+.btn-deactivate { background: #ef4444; color: white; }
+.btn-extend { 
+    background: #6a96f1; 
+    color: white; 
+    grid-column: span 2; 
+    display: none; /* Se activa por JS */
+}
+
+button:disabled { opacity: 0.4; }

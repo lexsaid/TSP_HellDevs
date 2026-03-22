@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario - MIZCUIN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/estilo_register.css">
+</head>
+<body>
+
+<div class="registro-container">
+    <header class="registro-header">
+        <a href="login.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1>MIZCUIN</h1>
+    </header>
+
+    <div class="form-area">
+        <h2>Crear Cuenta Nueva</h2>
+        <p>Únete a nuestra comunidad de amantes de mascotas.</p>
+        
+        <form id="registroForm">
+            <div class="row-inputs">
+                <div class="input-group">
+                    <label>Nombre</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="nombre" placeholder="Ej: Juan" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Apellido</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="apellido" placeholder="Ej: Pérez" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Email</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" placeholder="ejemplo@correo.com" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Teléfono </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" name="telefono" placeholder="+52... / N° local" pattern="[0-9+() -]*" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Contraseña</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="Mínimo 8 caracteres" minlength="8" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-registro">Registrarse</button>
+
+            <div class="login-link">
+                ¿Ya tienes cuenta? <a href="login.html">Inicia Sesión</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="../js/register.js"></script>
+
+</body>
+</html>

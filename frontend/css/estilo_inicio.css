@@ -1,98 +1,110 @@
-/* Definición de variables de color para facilitar cambios */
-:root {
-    --primary-blue: #6495ED;    /* Azul del encabezado */
-    --light-blue: #D0E0FF;      /* Azul claro de las pestañas */
-    --bg-white: #FAF7F7;        /* Fondo ligeramente rosado/blanco */
-    --text-dark: #333333;       /* Color de texto principal */
-    --icon-gray: #A0A0A0;       /* Color gris de la huella */
-}
-
-/* Reseteo básico para que no haya márgenes extraños */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+/* Estilos Base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    background-color: #f0f0f0;
-    display: block;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    background-color: #f4f7f9;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* Contenedor que simula la pantalla de un celular */
 .mobile-container {
-    width: 100%;           /* Ocupa todo el ancho disponible */
-    height: 100vh;         /* Ocupa todo el alto de la pantalla del celular */
-    background-color: var(--bg-white);
+    max-width: 450px;
+    margin: 0 auto;
+    background: white;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    /* Quitamos el border y el border-radius para que no parezca "cuadro" */
 }
 
-/* Estilo del Header Azul */
+/* Header y Nav */
 .main-header {
-    background-color: var(--primary-blue);
+    background-color: #6a96f1;
     color: white;
     padding: 15px;
     display: flex;
     align-items: center;
-    position: relative;
+    gap: 20px;
 }
 
-.menu-icon {
-    font-size: 24px;
-    cursor: pointer;
-}
+.menu-icon { cursor: pointer; font-size: 1.2rem; }
+.app-title { font-size: 1.4rem; flex-grow: 1; text-align: center; margin-right: 30px; }
 
-.app-title {
-    flex-grow: 1;
-    text-align: center;
-    font-size: 24px;
-    font-weight: 400;
-}
-
-/* Estilo de las pestañas (Tabs) */
 .sub-nav {
     display: flex;
-    background-color: var(--light-blue);
+    background-color: #dbeafe;
 }
 
 .nav-item {
-    flex: 1; /* Hace que ambos botones midan lo mismo */
-    padding: 10px;
-    border: none;
-    background: transparent;
-    color: var(--text-dark);
-    font-size: 14px;
-    cursor: pointer;
-    border-right: 1px solid #b0c4de; /* Línea divisoria suave */
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    color: #1e40af;
+    font-weight: 500;
+    font-size: 0.9rem;
 }
 
-.nav-item:last-child {
-    border-right: none;
-}
+.nav-item:first-child { border-right: 1px solid #bfdbfe; }
 
-/* Área central de bienvenida */
+/* Pantalla de Bienvenida */
 .welcome-screen {
-    flex-grow: 1; /* Ocupa todo el espacio restante */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    color: #64748b;
 }
 
-.icon-container {
-    font-size: 120px; /* Tamaño de la huella */
-    color: var(--icon-gray);
-    margin-bottom: 20px;
+.icon-container { font-size: 5rem; color: #cbd5e1; margin-bottom: 20px; }
+.welcome-text { font-size: 2rem; font-weight: 300; }
+
+/* MENÚ LATERAL (NUEVO) */
+.menu-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 998;
 }
 
-.welcome-text {
-    font-size: 32px;
-    color: var(--text-dark);
-    font-weight: 300;
+.side-menu {
+    position: fixed;
+    top: 0; left: -280px; /* Escondido */
+    width: 280px; height: 100%;
+    background: white;
+    z-index: 999;
+    transition: 0.3s ease-in-out;
+    padding: 30px 20px;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
 }
+
+.side-menu.active { left: 0; }
+.menu-overlay.active { display: block; }
+
+.menu-header-profile {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 20px;
+}
+
+.menu-header-profile i { font-size: 4rem; color: #6a96f1; display: block; margin-bottom: 10px; }
+.menu-header-profile span { font-weight: 600; color: #334155; }
+
+.menu-items a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    text-decoration: none;
+    color: #475569;
+    font-weight: 500;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+
+.menu-items a:hover { background: #f1f5f9; }
+.menu-items hr { border: 0; border-top: 1px solid #f1f5f9; margin: 15px 0; }
+
+.logout-link { color: #ef4444 !important; }
+.logout-link:hover { background: #fef2f2 !important; }
