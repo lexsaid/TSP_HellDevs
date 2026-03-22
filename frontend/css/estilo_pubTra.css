@@ -5,13 +5,15 @@
   }
 
 body {
-    background: linear-gradient(145deg, #eef2ff 0%, #f9fafc 100%);
+    background-color: #FAF7F7; 
     font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 24px 16px;
+    margin: 0; /* Aseguramos que no haya márgenes extra */
+    
 }
 
 .card {
