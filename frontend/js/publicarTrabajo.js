@@ -97,5 +97,5 @@ document.getElementById('postForm').addEventListener('submit', (e) => {
         }
     }
     
-    window.location.href = "inicio.html";
+    window.location.href = "index.html";
 });
