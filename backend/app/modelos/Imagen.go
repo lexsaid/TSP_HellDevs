@@ -1,4 +1,4 @@
-package models
+package modelos
 
 type Imagen struct {
 	Id_imagen int `json:"id_imagen"`

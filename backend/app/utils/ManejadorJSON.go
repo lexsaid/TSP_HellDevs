@@ -3,52 +3,61 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
-	"mizcuin/models"
+	"mizcuin/modelos"
 )
 
-func ConvertirUsuario(jsonModel []byte) (models.Usuario, error){
-	var usuario models.Usuario
+func ConvertirUsuario(jsonModel []byte) (modelos.Usuario, error){
+	var usuario modelos.Usuario
 	err := json.Unmarshal(jsonModel, &usuario)
 	if err != nil {
-		return models.Usuario{}, fmt.Errorf("error al convertir el JSON a usuario: %v", err)
+		return modelos.Usuario{}, fmt.Errorf("error al convertir el JSON a usuario: %v", err)
 	}
 	return usuario, nil
 }
 
-func ConvertirTrabajo(jsonModel []byte) (models.Trabajo, error){
-	var trabajo models.Trabajo
+func ConvertirTrabajo(jsonModel []byte) (modelos.Trabajo, error){
+	var trabajo modelos.Trabajo
 	err := json.Unmarshal(jsonModel, &trabajo)
 	if err != nil {
-		return models.Trabajo{}, fmt.Errorf("error al convertir el JSON a trabajo: %v", err)
+		return modelos.Trabajo{}, fmt.Errorf("error al convertir el JSON a trabajo: %v", err)
 	}
 	return trabajo, nil
 }
 
-func ConvertirTrabajoAceptado(jsonModel []byte) (models.Trabajo_aceptado, error){
-	var trabajoAceptado models.Trabajo_aceptado
+func ConvertirTrabajoAceptado(jsonModel []byte) (modelos.Trabajo_aceptado, error){
+	var trabajoAceptado modelos.Trabajo_aceptado
 	err := json.Unmarshal(jsonModel, &trabajoAceptado)
 	if err != nil {
-		return models.Trabajo_aceptado{}, fmt.Errorf("error al convertir el JSON a trabajo aceptado: %v", err)
+		return modelos.Trabajo_aceptado{}, fmt.Errorf("error al convertir el JSON a trabajo aceptado: %v", err)
 	}
 	return trabajoAceptado, nil
 }
 
-func ConvertirImagen(jsonModel []byte) (models.Imagen, error){
-	var imagen models.Imagen
+func ConvertirImagen(jsonModel []byte) (modelos.Imagen, error){
+	var imagen modelos.Imagen
 	err := json.Unmarshal(jsonModel, &imagen)
 	if err != nil {
-		return models.Imagen{}, fmt.Errorf("error al convertir el JSON a imagen: %v", err)
+		return modelos.Imagen{}, fmt.Errorf("error al convertir el JSON a imagen: %v", err)
 	}
 	return imagen, nil
 }
 
-func ConvertirMensajes(jsonModel []byte) (models.Mensajes, error){
-	var mensajes models.Mensajes
+func ConvertirMensajes(jsonModel []byte) (modelos.Mensajes, error){
+	var mensajes modelos.Mensajes
 	err := json.Unmarshal(jsonModel, &mensajes)
 	if err != nil {
-		return models.Mensajes{}, fmt.Errorf("error al convertir el JSON a mensajes: %v", err)
+		return modelos.Mensajes{}, fmt.Errorf("error al convertir el JSON a mensajes: %v", err)
 	}
 	return mensajes, nil
+}
+
+func ConvertirMensajesRemitente(jsonModel []byte) (modelos.MensajesRemitente, error){
+	var remitente modelos.MensajesRemitente
+	err := json.Unmarshal(jsonModel, &remitente)
+	if err != nil {
+		return modelos.MensajesRemitente{}, fmt.Errorf("error al convertir el JSON a mensajes remitente: %v", err)
+	}
+	return remitente, nil
 }
 
 func ConvertirAnyToJSON(modelo any) ([]byte, error){

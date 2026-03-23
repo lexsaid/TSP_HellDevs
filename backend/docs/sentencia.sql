@@ -12,6 +12,9 @@ CREATE TABLE Mensajes (
 	id_usuario_envia	INTEGER NOT NULL,
 	id_usuario_recibe	INTEGER NOT NULL,
 	id_trabajo	INTEGER NOT NULL,
+	contenido	TEXT NOT NULL,
+	fecha_mensaje	TEXT NOT NULL,
+	
 	FOREIGN KEY(id_usuario_envia) REFERENCES Usuario(id_usuario),
 	FOREIGN KEY(id_usuario_recibe) REFERENCES Usuario(id_usuario),
 	FOREIGN KEY(id_trabajo) REFERENCES Trabajo(id_trabajo)
@@ -25,7 +28,7 @@ CREATE TABLE Trabajo (
 	descripcion	TEXT NOT NULL,
 	id_usuario	INTEGER NOT NULL,
 	tipo_trabajo	TEXT NOT NULL,
-	estado	BLOB NOT NULL,
+	estado	TEXT NOT NULL,
 	FOREIGN KEY(id_usuario) REFERENCES Usuario(id_usuario)
 );
 
