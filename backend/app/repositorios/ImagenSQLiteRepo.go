@@ -1,8 +1,8 @@
-package repository
+package repositorios
 
 import(
 	"database/sql"
-	"mizcuin/models"
+	"mizcuin/modelos"
 	"os"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
@@ -35,12 +35,12 @@ func GuardarImagen(consulta string) bool{
 	
 }
 
-func BuscarImagenes(consulta string) (models.ListadoImagenes, bool){
+func BuscarImagenes(consulta string) (modelos.ListadoImagenes, bool){
 	db, err := sql.Open("sqlite3", dbPathImagen)
 
 	if err != nil {
 		fmt.Println("Error al abrir la base de datos en imagen", err)
-		return models.ListadoImagenes{}, false
+		return modelos.ListadoImagenes{}, false
 	}
 
 	defer db.Close()
@@ -49,12 +49,12 @@ func BuscarImagenes(consulta string) (models.ListadoImagenes, bool){
 
 	if err != nil {
 		fmt.Println("Error al buscar la imagen", err)
-		return models.ListadoImagenes{}, false
+		return modelos.ListadoImagenes{}, false
 	}
 
 	defer rows.Close()
 
-	var imagenes []models.Imagen
+	var imagenes []modelos.Imagen
 
 	for rows.Next() {
 		var idImagen int
@@ -65,14 +65,14 @@ func BuscarImagenes(consulta string) (models.ListadoImagenes, bool){
 
 		if err != nil {
 			fmt.Println("Error al buscar la imagen inesperado ", err)
-			return models.ListadoImagenes{}, false
+			return modelos.ListadoImagenes{}, false
 		}
 
-		imagenes = append(imagenes, models.Imagen{Id_trabajo: idTrabajo, Imagen: imagen})
+		imagenes = append(imagenes, modelos.Imagen{Id_trabajo: idTrabajo, Imagen: imagen})
 	}
 
 	fmt.Println("Imagenes encontradas correctamente: ", consulta)
-	return models.ListadoImagenes{Imagenes: imagenes}, true
+	return modelos.ListadoImagenes{Imagenes: imagenes}, true
 }
 
 func ActualizarImagen(consulta string) bool{
