@@ -22,6 +22,7 @@ CREATE TABLE Mensajes (
 
 CREATE TABLE Trabajo (
 	id_trabajo	INTEGER  PRIMARY KEY AUTOINCREMENT,
+	nombre	TEXT NOT NULL,
 	ubicacion	TEXT NOT NULL,
 	fecha_publicacion	TEXT NOT NULL,
 	monto	REAL NOT NULL,
@@ -36,7 +37,7 @@ CREATE TABLE Trabajo_aceptado(
 	id_trabajo	INTEGER NOT NULL,
 	id_usuario	INTEGER NOT NULL,
 	fecha_aceptacion	TEXT NOT NULL,
-	estado_trabajo TEXT NOT NULL CHECK("Pendiente", "Terminado", "Cancelado"),
+	estado_trabajo TEXT NOT NULL CHECK(estado_trabajo IN ("Pendiente", "Terminado", "Cancelado")),
 	FOREIGN KEY(id_trabajo) REFERENCES Trabajo(id_trabajo),
 	FOREIGN KEY(id_usuario) REFERENCES Usuario(id_usuario),
 	PRIMARY KEY(id_trabajo, id_usuario)

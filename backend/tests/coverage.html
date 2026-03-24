@@ -1,0 +1,1470 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>controladores: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">mizcuin/controladores/AuthMiddleware.go (100.0%)</option>
+				
+				<option value="file1">mizcuin/controladores/Router.go (0.0%)</option>
+				
+				<option value="file2">mizcuin/interface/main.go (0.0%)</option>
+				
+				<option value="file3">mizcuin/manejadores/GestionUsuario.go (100.0%)</option>
+				
+				<option value="file4">mizcuin/manejadores/MensajesManejador.go (94.7%)</option>
+				
+				<option value="file5">mizcuin/manejadores/PublicacionManejador.go (100.0%)</option>
+				
+				<option value="file6">mizcuin/manejadores/TrabajosAceptadosManejador.go (100.0%)</option>
+				
+				<option value="file7">mizcuin/repositorios/ImagenSQLiteRepo.go (0.0%)</option>
+				
+				<option value="file8">mizcuin/repositorios/MensajesSQLiteRepo.go (0.0%)</option>
+				
+				<option value="file9">mizcuin/repositorios/TrabajoSQLiteRepo.go (0.0%)</option>
+				
+				<option value="file10">mizcuin/repositorios/TrabajosAceptadosSQLiteRepo.go (0.0%)</option>
+				
+				<option value="file11">mizcuin/repositorios/UsuarioSQLiteRepo.go (0.0%)</option>
+				
+				<option value="file12">mizcuin/utils/ManejadorJSON.go (97.1%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package controllers
+
+import (
+        "crypto/rand"
+        "encoding/hex"
+        "fmt"
+        "net/http"
+        "sync"
+)
+
+// aqui guardo las sesiones activas: token -&gt; id_usuario
+var sesiones = make(map[string]int)
+var mu sync.Mutex
+
+// genero un token aleatorio de 32 bytes en hexadecimal para usarlo como identificador de sesion
+func generarToken() string <span class="cov8" title="1">{
+        bytes := make([]byte, 32)
+        rand.Read(bytes)
+        return hex.EncodeToString(bytes)
+}</span>
+
+// creo una sesion nueva para el usuario y le devuelvo el token generado
+func CrearSesion(id_usuario int) string <span class="cov8" title="1">{
+        mu.Lock()
+        defer mu.Unlock()
+
+        token := generarToken()
+        sesiones[token] = id_usuario
+        return token
+}</span>
+
+// elimino la sesion del usuario cuando cierra sesion
+func EliminarSesion(token string) <span class="cov8" title="1">{
+        mu.Lock()
+        defer mu.Unlock()
+
+        delete(sesiones, token)
+}</span>
+
+// verifico que el token sea valido antes de dejar pasar la solicitud
+// si es valido, agrego el id_usuario al header para que los handlers lo puedan usar
+func validarSesion(solicitud http.HandlerFunc) http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov8" title="1">{
+                token := r.Header.Get("Authorization")
+
+                if token == "" </span><span class="cov8" title="1">{
+                        http.Error(w, `{"error":"no se envio el token de autenticacion"}`, http.StatusUnauthorized)
+                        return
+                }</span>
+
+                <span class="cov8" title="1">mu.Lock()
+                id_usuario, existe := sesiones[token]
+                mu.Unlock()
+
+                if !existe </span><span class="cov8" title="1">{
+                        http.Error(w, `{"error":"token invalido o sesion expirada"}`, http.StatusUnauthorized)
+                        return
+                }</span>
+
+                // paso el id_usuario por el header para que el handler lo pueda leer
+                <span class="cov8" title="1">r.Header.Set("X-Usuario-Id", fmt.Sprintf("%d", id_usuario))
+                solicitud(w, r)</span>
+        }
+}</pre>
+		
+		<pre class="file" id="file1" style="display: none">package controllers
+
+import (
+        "fmt"
+        "io"
+        "net/http"
+        "strconv"
+
+        "mizcuin/manejadores"
+        "mizcuin/modelos"
+        "mizcuin/repositorios"
+        "mizcuin/utils"
+)
+
+// arranco el servidor HTTP y registro todas las rutas
+func IniciarServidor() <span class="cov0" title="0">{
+        // rutas publicas (no necesitan token)
+        http.HandleFunc("/login", loginHandler)
+        http.HandleFunc("/usuario", usuarioHandler)
+
+        // rutas protegidas (necesitan token en el header Authorization)
+        http.HandleFunc("/trabajo", validarSesion(trabajoHandler))
+        http.HandleFunc("/trabajo-aceptado", validarSesion(trabajoAceptadoHandler))
+        http.HandleFunc("/mensaje", validarSesion(mensajeHandler))
+
+        fmt.Println("Servidor iniciado en el puerto 40000")
+        http.ListenAndServe(":40000", nil)
+}</span>
+
+// respondo con JSON y el status code que me pasen
+func responderJSON(w http.ResponseWriter, statusCode int, datos any) <span class="cov0" title="0">{
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(statusCode)
+
+        jsonResp, err := utils.ConvertirAnyToJSON(datos)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, `{"error":"error al generar respuesta"}`, http.StatusInternalServerError)
+                return
+        }</span>
+
+        <span class="cov0" title="0">w.Write(jsonResp)</span>
+}
+
+// respondo con un mensaje de error en formato JSON
+func responderError(w http.ResponseWriter, statusCode int, mensaje string) <span class="cov0" title="0">{
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(statusCode)
+        w.Write([]byte(fmt.Sprintf(`{"error":"%s"}`, mensaje)))
+}</span>
+
+// leo el body de la solicitud y lo devuelvo como bytes
+func leerBody(r *http.Request) ([]byte, error) <span class="cov0" title="0">{
+        defer r.Body.Close()
+        return io.ReadAll(r.Body)
+}</span>
+
+// ==================== LOGIN ====================
+
+// manejo el inicio de sesion: recibo email y contraseña, valido y devuelvo un token
+func loginHandler(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        if r.Method != http.MethodPost </span><span class="cov0" title="0">{
+                responderError(w, http.StatusMethodNotAllowed, "metodo no permitido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        // solo necesito el email y la contraseña para el login
+        <span class="cov0" title="0">usuario, err := utils.ConvertirUsuario(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        // busco el usuario por email en la base de datos
+        <span class="cov0" title="0">usuarioDB, encontrado := repositorios.BuscarPorEmail(usuario.Email)
+        if !encontrado </span><span class="cov0" title="0">{
+                responderError(w, http.StatusUnauthorized, "email o contraseña incorrectos")
+                return
+        }</span>
+
+        // comparo la contraseña que me enviaron con la que tengo guardada
+        <span class="cov0" title="0">if usuarioDB.Contraseña != usuario.Contraseña </span><span class="cov0" title="0">{
+                responderError(w, http.StatusUnauthorized, "email o contraseña incorrectos")
+                return
+        }</span>
+
+        // genero un token y lo asocio al usuario
+        <span class="cov0" title="0">token := CrearSesion(usuarioDB.Id_usuario)
+
+        responderJSON(w, http.StatusOK, map[string]any{
+                "token":      token,
+                "id_usuario": usuarioDB.Id_usuario,
+                "nombre":     usuarioDB.Nombre + " " + usuarioDB.Apellido,
+        })</span>
+}
+
+// ==================== USUARIOS ====================
+
+// manejo todas las operaciones de usuario segun el metodo HTTP
+func usuarioHandler(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        switch r.Method </span>{
+        case http.MethodPost:<span class="cov0" title="0">
+                registrarUsuario(w, r)</span>
+        case http.MethodGet:<span class="cov0" title="0">
+                obtenerUsuario(w, r)</span>
+        case http.MethodPut:<span class="cov0" title="0">
+                actualizarUsuario(w, r)</span>
+        case http.MethodDelete:<span class="cov0" title="0">
+                eliminarUsuario(w, r)</span>
+        default:<span class="cov0" title="0">
+                responderError(w, http.StatusMethodNotAllowed, "metodo no permitido")</span>
+        }
+}
+
+// registro un usuario nuevo (no necesita token)
+func registrarUsuario(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        <span class="cov0" title="0">usuario, err := utils.ConvertirUsuario(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.GuardarUsuario(usuario); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo registrar el usuario")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusCreated, map[string]string{"mensaje": "usuario registrado correctamente"})</span>
+}
+
+// obtengo los datos de un usuario por su id (viene como query param)
+func obtenerUsuario(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        idStr := r.URL.Query().Get("id")
+        if idStr == "" </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "falta el parametro id")
+                return
+        }</span>
+
+        <span class="cov0" title="0">id, err := strconv.Atoi(idStr)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "id invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">usuario, encontrado := manejadores.BuscarUsuario(modelos.Usuario{Id_usuario: id})
+        if !encontrado </span><span class="cov0" title="0">{
+                responderError(w, http.StatusNotFound, "usuario no encontrado")
+                return
+        }</span>
+
+        // no devuelvo la contraseña en la respuesta
+        <span class="cov0" title="0">usuario.Contraseña = ""
+        responderJSON(w, http.StatusOK, usuario)</span>
+}
+
+// actualizo los datos de un usuario
+func actualizarUsuario(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        <span class="cov0" title="0">usuario, err := utils.ConvertirUsuario(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.ActualizarUsuario(usuario); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo actualizar el usuario")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusOK, map[string]string{"mensaje": "usuario actualizado correctamente"})</span>
+}
+
+// elimino un usuario
+func eliminarUsuario(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        <span class="cov0" title="0">usuario, err := utils.ConvertirUsuario(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.EliminarUsuario(usuario); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo eliminar el usuario")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusOK, map[string]string{"mensaje": "usuario eliminado correctamente"})</span>
+}
+
+// ==================== TRABAJOS (PUBLICACIONES) ====================
+
+// manejo todas las operaciones de trabajos segun el metodo HTTP
+func trabajoHandler(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        switch r.Method </span>{
+        case http.MethodPost:<span class="cov0" title="0">
+                crearTrabajo(w, r)</span>
+        case http.MethodGet:<span class="cov0" title="0">
+                obtenerTrabajo(w, r)</span>
+        case http.MethodPut:<span class="cov0" title="0">
+                actualizarTrabajo(w, r)</span>
+        case http.MethodDelete:<span class="cov0" title="0">
+                eliminarTrabajo(w, r)</span>
+        default:<span class="cov0" title="0">
+                responderError(w, http.StatusMethodNotAllowed, "metodo no permitido")</span>
+        }
+}
+
+// creo un trabajo nuevo
+func crearTrabajo(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        <span class="cov0" title="0">trabajo, err := utils.ConvertirTrabajo(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.CrearTrabajo(trabajo); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo crear el trabajo")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusCreated, map[string]string{"mensaje": "trabajo creado correctamente"})</span>
+}
+
+// obtengo un trabajo por su id
+func obtenerTrabajo(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        idStr := r.URL.Query().Get("id")
+        if idStr == "" </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "falta el parametro id")
+                return
+        }</span>
+
+        <span class="cov0" title="0">id, err := strconv.Atoi(idStr)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "id invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">trabajo, encontrado := manejadores.ObtenerTrabajo(id)
+        if !encontrado </span><span class="cov0" title="0">{
+                responderError(w, http.StatusNotFound, "trabajo no encontrado")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusOK, trabajo)</span>
+}
+
+// actualizo un trabajo existente
+func actualizarTrabajo(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        <span class="cov0" title="0">trabajo, err := utils.ConvertirTrabajo(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.ActualizarTrabajo(trabajo); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo actualizar el trabajo")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusOK, map[string]string{"mensaje": "trabajo actualizado correctamente"})</span>
+}
+
+// elimino un trabajo
+func eliminarTrabajo(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        <span class="cov0" title="0">trabajo, err := utils.ConvertirTrabajo(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.EliminarTrabajo(trabajo); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo eliminar el trabajo")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusOK, map[string]string{"mensaje": "trabajo eliminado correctamente"})</span>
+}
+
+// ==================== TRABAJOS ACEPTADOS ====================
+
+// manejo todas las operaciones de trabajos aceptados segun el metodo HTTP
+func trabajoAceptadoHandler(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        switch r.Method </span>{
+        case http.MethodPost:<span class="cov0" title="0">
+                aceptarTrabajo(w, r)</span>
+        case http.MethodGet:<span class="cov0" title="0">
+                listarTrabajosAceptados(w, r)</span>
+        case http.MethodPut:<span class="cov0" title="0">
+                actualizarTrabajoAceptado(w, r)</span>
+        case http.MethodDelete:<span class="cov0" title="0">
+                eliminarTrabajoAceptado(w, r)</span>
+        default:<span class="cov0" title="0">
+                responderError(w, http.StatusMethodNotAllowed, "metodo no permitido")</span>
+        }
+}
+
+// acepto un trabajo (lo registro en la tabla de trabajos aceptados)
+func aceptarTrabajo(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        <span class="cov0" title="0">trabajo, err := utils.ConvertirTrabajoAceptado(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.AceptarTrabajo(trabajo); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo aceptar el trabajo")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusCreated, map[string]string{"mensaje": "trabajo aceptado correctamente"})</span>
+}
+
+// listo todos los trabajos aceptados de un usuario
+func listarTrabajosAceptados(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        idStr := r.URL.Query().Get("id_usuario")
+        if idStr == "" </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "falta el parametro id_usuario")
+                return
+        }</span>
+
+        <span class="cov0" title="0">id, err := strconv.Atoi(idStr)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "id_usuario invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">lista, encontrado := manejadores.ObtenerListaTrabajosAceptados(id)
+        if !encontrado </span><span class="cov0" title="0">{
+                responderError(w, http.StatusNotFound, "no se encontraron trabajos aceptados")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusOK, lista)</span>
+}
+
+// actualizo un trabajo aceptado
+func actualizarTrabajoAceptado(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        <span class="cov0" title="0">trabajo, err := utils.ConvertirTrabajoAceptado(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.ActualizarTrabajoAceptado(trabajo); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo actualizar el trabajo aceptado")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusOK, map[string]string{"mensaje": "trabajo aceptado actualizado correctamente"})</span>
+}
+
+// elimino un trabajo aceptado
+func eliminarTrabajoAceptado(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        <span class="cov0" title="0">trabajo, err := utils.ConvertirTrabajoAceptado(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.EliminarTrabajoAceptado(trabajo); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo eliminar el trabajo aceptado")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusOK, map[string]string{"mensaje": "trabajo aceptado eliminado correctamente"})</span>
+}
+
+// ==================== MENSAJES ====================
+
+// manejo todas las operaciones de mensajes segun el metodo HTTP
+func mensajeHandler(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        switch r.Method </span>{
+        case http.MethodPost:<span class="cov0" title="0">
+                enviarMensaje(w, r)</span>
+        case http.MethodGet:<span class="cov0" title="0">
+                listarMensajes(w, r)</span>
+        case http.MethodPut:<span class="cov0" title="0">
+                actualizarMensaje(w, r)</span>
+        case http.MethodDelete:<span class="cov0" title="0">
+                eliminarMensaje(w, r)</span>
+        default:<span class="cov0" title="0">
+                responderError(w, http.StatusMethodNotAllowed, "metodo no permitido")</span>
+        }
+}
+
+// envio un mensaje nuevo
+func enviarMensaje(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        <span class="cov0" title="0">mensaje, err := utils.ConvertirMensajes(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.GuardarMensaje(mensaje); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo enviar el mensaje")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusCreated, map[string]string{"mensaje": "mensaje enviado correctamente"})</span>
+}
+
+// obtengo la lista de mensajes de un usuario en un trabajo especifico
+func listarMensajes(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        idUsuarioStr := r.URL.Query().Get("id_usuario")
+        idTrabajoStr := r.URL.Query().Get("id_trabajo")
+
+        if idUsuarioStr == "" || idTrabajoStr == "" </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "faltan los parametros id_usuario e id_trabajo")
+                return
+        }</span>
+
+        <span class="cov0" title="0">idUsuario, err := strconv.Atoi(idUsuarioStr)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "id_usuario invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">idTrabajo, err := strconv.Atoi(idTrabajoStr)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "id_trabajo invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">remitente := modelos.MensajesRemitente{
+                Id_usuario: idUsuario,
+                Id_trabajo: idTrabajo,
+        }
+
+        lista, encontrado := manejadores.ObjetenerListaMensajes(remitente)
+        if !encontrado </span><span class="cov0" title="0">{
+                responderError(w, http.StatusNotFound, "no se encontraron mensajes")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusOK, lista)</span>
+}
+
+// actualizo el contenido de un mensaje
+func actualizarMensaje(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        idStr := r.URL.Query().Get("id_mensaje")
+        if idStr == "" </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "falta el parametro id_mensaje")
+                return
+        }</span>
+
+        <span class="cov0" title="0">id, err := strconv.Atoi(idStr)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "id_mensaje invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">body, err := leerBody(r)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "error al leer la solicitud")
+                return
+        }</span>
+
+        // espero recibir un JSON con el campo "contenido"
+        <span class="cov0" title="0">mensaje, err := utils.ConvertirMensajes(body)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "JSON invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.ActualizarMensaje(id, mensaje.Contenido); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo actualizar el mensaje")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusOK, map[string]string{"mensaje": "mensaje actualizado correctamente"})</span>
+}
+
+// elimino un mensaje por su id
+func eliminarMensaje(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        idStr := r.URL.Query().Get("id_mensaje")
+        if idStr == "" </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "falta el parametro id_mensaje")
+                return
+        }</span>
+
+        <span class="cov0" title="0">id, err := strconv.Atoi(idStr)
+        if err != nil </span><span class="cov0" title="0">{
+                responderError(w, http.StatusBadRequest, "id_mensaje invalido")
+                return
+        }</span>
+
+        <span class="cov0" title="0">if ok := manejadores.EliminarMensaje(id); !ok </span><span class="cov0" title="0">{
+                responderError(w, http.StatusInternalServerError, "no se pudo eliminar el mensaje")
+                return
+        }</span>
+
+        <span class="cov0" title="0">responderJSON(w, http.StatusOK, map[string]string{"mensaje": "mensaje eliminado correctamente"})</span>
+}</pre>
+		
+		<pre class="file" id="file2" style="display: none">package main
+
+import (
+        controllers "mizcuin/controladores"
+)
+
+func main() <span class="cov0" title="0">{
+        controllers.IniciarServidor()
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package manejadores
+
+import(
+        "mizcuin/modelos"
+        "mizcuin/repositorios"
+)
+
+func GuardarUsuario(usuario modelos.Usuario) bool<span class="cov8" title="1">{
+        consulta := "INSERT INTO Usuario (nombre, apellido, email, telefono, contraseña) VALUES (?, ?, ?, ?, ?)"
+        
+        return repositorios.Guardar(consulta, usuario)
+}</span>
+
+func BuscarUsuario(usuario modelos.Usuario) (modelos.Usuario, bool)<span class="cov8" title="1">{
+        consulta := "SELECT * FROM Usuario WHERE id_usuario = ?"
+        
+        return repositorios.BuscarIdUsuario(consulta, usuario.Id_usuario)
+}</span>
+
+func ActualizarUsuario(usuario modelos.Usuario) bool<span class="cov8" title="1">{
+        consulta := "UPDATE Usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, contraseña = ? WHERE id_usuario = ?"
+        
+        return repositorios.Actualizar(consulta, usuario)
+}</span>
+
+func EliminarUsuario(usuario modelos.Usuario) bool<span class="cov8" title="1">{
+        consulta := "DELETE FROM Usuario WHERE id_usuario = ?"
+        
+        return repositorios.Eliminar(consulta, usuario)
+}</pre>
+		
+		<pre class="file" id="file4" style="display: none">package manejadores
+
+import(
+        "mizcuin/modelos"
+        "mizcuin/repositorios"
+)
+
+func GuardarMensaje(mensaje modelos.Mensajes) bool<span class="cov8" title="1">{
+        consulta := "INSERT INTO Mensajes (id_usuario_envia, id_usuario_recibe, id_trabajo, contenido, fecha_mensaje) VALUES (?, ?, ?, ?, ?)"
+        
+        return repositorios.GuardarMensaje(consulta, mensaje)
+}</span>
+
+func ObjetenerListaMensajes(remitente modelos.MensajesRemitente) (modelos.ListadoMensajesFinal, bool)<span class="cov8" title="1">{
+        
+        etapa1, err := obtenerMensajesRemitente(remitente.Id_usuario, remitente.Id_trabajo)
+
+        if err == false </span><span class="cov0" title="0">{
+                return modelos.ListadoMensajesFinal{}, false
+        }</span>
+
+        <span class="cov8" title="1">return agruparDatosMensaje(etapa1), true</span>
+}
+
+func obtenerMensajesRemitente(id_usuario int, id_trabajo int) (modelos.ListadoMensajes, bool)<span class="cov8" title="1">{
+        consulta := "SELECT * FROM Mensajes WHERE id_usuario_envia = ? AND id_trabajo = ?"
+        
+        return repositorios.BuscarMensajes(consulta, id_usuario, id_trabajo)
+}</span>
+
+func agruparDatosMensaje(mensaje modelos.ListadoMensajes) modelos.ListadoMensajesFinal<span class="cov8" title="1">{
+        var lista = modelos.ListadoMensajesFinal{}
+        consulta := "SELECT nombre, apellido FROM Usuario WHERE id_usuario = ?"
+        
+        for _, idx_mensaje := range mensaje.Mensajes </span><span class="cov8" title="1">{
+                datosUsuarioRemitente, _ := repositorios.BuscarIdUsuario(consulta, idx_mensaje.Id_usuario_envia)
+                datosUsuarioReceptor, _ := repositorios.BuscarIdUsuario(consulta, idx_mensaje.Id_usuario_recibe)
+                
+                lista.Mensajes = append(lista.Mensajes, modelos.MensajeFinal{
+                        Id_mensaje: idx_mensaje.Id_mensaje,
+                        Remitente: datosUsuarioRemitente.Nombre + " " + datosUsuarioRemitente.Apellido,
+                        Id_remitente: idx_mensaje.Id_usuario_envia,
+                        Receptor: datosUsuarioReceptor.Nombre + " " + datosUsuarioReceptor.Apellido,
+                        Id_receptor: idx_mensaje.Id_usuario_recibe,
+                        Id_trabajo: idx_mensaje.Id_trabajo,
+                        Contenido: idx_mensaje.Contenido,
+                        Fecha_mensaje: idx_mensaje.Fecha_mensaje,
+                })
+        }</span>
+        
+        <span class="cov8" title="1">return lista</span>
+}
+
+
+
+func ActualizarMensaje(id_mensaje int, contenido string) bool<span class="cov8" title="1">{
+        consulta := "UPDATE Mensajes SET contenido = ? WHERE id_mensaje = ?"
+        
+        return repositorios.ActualizarMensaje(consulta, id_mensaje, contenido)
+}</span>
+
+func EliminarMensaje(id_mensaje int) bool<span class="cov8" title="1">{
+        consulta := "DELETE FROM Mensajes WHERE id_mensaje = ?"
+        
+        return repositorios.EliminarMensaje(consulta, id_mensaje)
+}</pre>
+		
+		<pre class="file" id="file5" style="display: none">package manejadores
+
+import(
+        "mizcuin/modelos"
+        "mizcuin/repositorios"
+)
+
+func CrearTrabajo(trabajo modelos.Trabajo) bool<span class="cov8" title="1">{
+        consulta := "INSERT INTO Trabajo (nombre, ubicacion, fecha_publicacion, monto, descripcion, id_usuario, tipo_trabajo, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        
+        return repositorios.GuardarTrabajo(consulta, trabajo)
+}</span>
+
+func ObtenerTrabajo(id_trabajo int) (modelos.Trabajo, bool)<span class="cov8" title="1">{
+        consulta := "SELECT * FROM Trabajo WHERE id_trabajo = ?"
+        
+        return repositorios.BuscarIDTrabajo(consulta, id_trabajo)
+}</span>
+
+func ActualizarTrabajo(trabajo modelos.Trabajo) bool<span class="cov8" title="1">{
+        consulta := "UPDATE Trabajo SET nombre = ?, ubicacion = ?, fecha_publicacion = ?, monto = ?, descripcion = ?, id_usuario = ?, tipo_trabajo = ?, estado = ? WHERE id_trabajo = ?"
+        
+        return repositorios.ActualizarTrabajo(consulta, trabajo)
+}</span>
+
+func EliminarTrabajo(trabajo modelos.Trabajo) bool<span class="cov8" title="1">{
+        consulta := "DELETE FROM Trabajo WHERE id_trabajo = ?"
+        
+        return repositorios.EliminarTrabajo(consulta, trabajo)
+}</pre>
+		
+		<pre class="file" id="file6" style="display: none">package manejadores
+
+import(
+        "mizcuin/modelos"
+        "mizcuin/repositorios"
+)
+
+func AceptarTrabajo(trabajo modelos.Trabajo_aceptado) bool<span class="cov8" title="1">{
+        consulta := "INSERT INTO Trabajo_aceptado (id_trabajo, id_usuario, fecha_aceptacion, estado_trabajo) VALUES (?, ?, ?, ?)"
+        
+        return repositorios.GuardarTrabajoAceptado(consulta, trabajo)
+}</span>
+
+func ObtenerListaTrabajosAceptados(id_usuario int) (modelos.ListaTrabajosAceptados, bool)<span class="cov8" title="1">{
+        consulta := "SELECT * FROM Trabajo_aceptado WHERE id_usuario = ?"
+        
+        return repositorios.BuscarIDUsuarioTrabajo(consulta, id_usuario)
+}</span>
+
+func ActualizarTrabajoAceptado(trabajo modelos.Trabajo_aceptado) bool<span class="cov8" title="1">{
+        consulta := "UPDATE Trabajo_aceptado SET id_trabajo = ?, id_usuario = ?, fecha_aceptacion = ?, estado_trabajo = ? WHERE id_trabajo = ?"
+        
+        return repositorios.ActualizarTrabajoAceptado(consulta, trabajo)
+}</span>
+
+func EliminarTrabajoAceptado(trabajo modelos.Trabajo_aceptado) bool<span class="cov8" title="1">{
+        consulta := "DELETE FROM Trabajo_aceptado WHERE id_trabajo = ?"
+        
+        return repositorios.EliminarTrabajoAceptado(consulta, trabajo)
+}</pre>
+		
+		<pre class="file" id="file7" style="display: none">package repositorios
+
+import(
+        "database/sql"
+        "mizcuin/modelos"
+        "os"
+        "fmt"
+        _ "github.com/mattn/go-sqlite3"
+)
+
+var dbPathImagen string
+
+func init()<span class="cov0" title="0">{
+        dbPathImagen = os.Getenv("DB_PATH")
+}</span>
+
+func GuardarImagen(consulta string) bool<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPathImagen)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en imagen", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        _, err = db.Exec(consulta)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al ejecutar la consulta en imagen", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">fmt.Println("Imagen guardada correctamente: ", consulta)
+        return true</span>
+        
+}
+
+func BuscarImagenes(consulta string) (modelos.ListadoImagenes, bool)<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPathImagen)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en imagen", err)
+                return modelos.ListadoImagenes{}, false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        rows, err := db.Query(consulta)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al buscar la imagen", err)
+                return modelos.ListadoImagenes{}, false
+        }</span>
+
+        <span class="cov0" title="0">defer rows.Close()
+
+        var imagenes []modelos.Imagen
+
+        for rows.Next() </span><span class="cov0" title="0">{
+                var idImagen int
+                var idTrabajo int
+                var imagen []byte
+
+                err = rows.Scan(&amp;idImagen, &amp;idTrabajo, &amp;imagen)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        fmt.Println("Error al buscar la imagen inesperado ", err)
+                        return modelos.ListadoImagenes{}, false
+                }</span>
+
+                <span class="cov0" title="0">imagenes = append(imagenes, modelos.Imagen{Id_trabajo: idTrabajo, Imagen: imagen})</span>
+        }
+
+        <span class="cov0" title="0">fmt.Println("Imagenes encontradas correctamente: ", consulta)
+        return modelos.ListadoImagenes{Imagenes: imagenes}, true</span>
+}
+
+func ActualizarImagen(consulta string) bool<span class="cov0" title="0">{
+        return GuardarImagen(consulta)
+}</span>
+
+func EliminarImagen(consulta string) bool<span class="cov0" title="0">{
+        return GuardarImagen(consulta)
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package repositorios
+
+import(
+        "database/sql"
+        "mizcuin/modelos"
+        "os"
+        "fmt"
+        _ "github.com/mattn/go-sqlite3"
+)
+
+var dbPathMensajes string
+
+func init()<span class="cov0" title="0">{
+        dbPathMensajes = os.Getenv("DB_PATH")
+}</span>
+
+func GuardarMensaje(consulta string, mensaje modelos.Mensajes) bool<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPathMensajes)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en mensajes", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        _, err = db.Exec(consulta, mensaje.Id_usuario_envia, mensaje.Id_usuario_recibe, mensaje.Id_trabajo, mensaje.Contenido, mensaje.Fecha_mensaje)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al ejecutar la consulta en mensajes", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">fmt.Println("Mensaje guardado correctamente: ", consulta)
+        return true</span>
+        
+}
+
+func BuscarMensajes(consulta string, id_usuario int, id_trabajo int) (modelos.ListadoMensajes, bool)<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPathMensajes)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en mensajes", err)
+                return modelos.ListadoMensajes{}, false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        rows, err := db.Query(consulta, id_usuario, id_trabajo)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al buscar el mensaje", err)
+                return modelos.ListadoMensajes{}, false
+        }</span>
+
+        <span class="cov0" title="0">defer rows.Close()
+
+        var mensajes []modelos.Mensajes
+
+        for rows.Next() </span><span class="cov0" title="0">{
+                var idMensaje int
+                var idUsuarioEnvia int
+                var idUsuarioRecibe int
+                var idTrabajo int
+                var contenido string
+                var fechaMensaje string
+
+                err = rows.Scan(&amp;idMensaje, &amp;idUsuarioEnvia, &amp;idUsuarioRecibe, &amp;idTrabajo, &amp;contenido, &amp;fechaMensaje)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        fmt.Println("Error al buscar el mensaje", err)
+                        return modelos.ListadoMensajes{}, false
+                }</span>
+
+                <span class="cov0" title="0">mensajes = append(mensajes, modelos.Mensajes{Id_mensaje: idMensaje, Id_usuario_envia: idUsuarioEnvia, Id_usuario_recibe: idUsuarioRecibe, Id_trabajo: idTrabajo, Contenido: contenido, Fecha_mensaje: fechaMensaje})</span>
+        }
+
+        <span class="cov0" title="0">fmt.Println("Mensaje encontrado correctamente: ", consulta)
+        return modelos.ListadoMensajes{Mensajes: mensajes}, true</span>
+}
+
+func ActualizarMensaje(consulta string, id_mensaje int, contenido string) bool<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPathMensajes)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en mensajes", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        _, err = db.Exec(consulta, id_mensaje, contenido)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al ejecutar la consulta en mensajes", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">fmt.Println("Mensaje actualizado correctamente: ", consulta)
+        return true</span>
+}
+
+func EliminarMensaje(consulta string, id_mensaje int) bool<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPathMensajes)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en mensajes", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        _, err = db.Exec(consulta, id_mensaje)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al ejecutar la consulta en mensajes", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">fmt.Println("Mensaje eliminado correctamente: ", consulta)
+        return true</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package repositorios
+
+import(
+        "database/sql"
+        "mizcuin/modelos"
+        "os"
+        "fmt"
+        _ "github.com/mattn/go-sqlite3"
+)
+
+var dbPathTrabajo string
+
+func init()<span class="cov0" title="0">{
+        dbPathTrabajo = os.Getenv("DB_PATH")
+}</span>
+
+func GuardarTrabajo(consulta string, trabajo modelos.Trabajo) bool<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPathTrabajo)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en trabajo", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        _, err = db.Exec(consulta, trabajo.Nombre, trabajo.Ubicacion, trabajo.Fecha_publicacion, trabajo.Monto, trabajo.Descripcion, trabajo.Id_usuario, trabajo.Tipo_trabajo, trabajo.Estado)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al ejecutar la consulta en trabajo", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">fmt.Println("Trabajo guardado correctamente: ", consulta)
+        return true</span>
+        
+}
+
+func BuscarIDTrabajo(consulta string, id_trabajo int) (modelos.Trabajo, bool)<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPathTrabajo)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en trabajo", err)
+                return modelos.Trabajo{}, false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        row := db.QueryRow(consulta, id_trabajo)
+
+        var idTrabajo int
+        var nombre string
+        var ubicacion string
+        var fechaPublicacion string
+        var monto float64
+        var descripcion string
+        var idUsuario int
+        var tipoTrabajo string
+        var estado string
+
+        err = row.Scan(&amp;idTrabajo, &amp;nombre, &amp;ubicacion, &amp;fechaPublicacion, &amp;monto, &amp;descripcion, &amp;idUsuario, &amp;tipoTrabajo, &amp;estado)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al buscar el trabajo", err)
+                return modelos.Trabajo{}, false
+        }</span>
+
+        <span class="cov0" title="0">fmt.Println("Trabajo encontrado correctamente: ", consulta)
+        return modelos.Trabajo{Id_trabajo: idTrabajo, Nombre: nombre, Ubicacion: ubicacion, Fecha_publicacion: fechaPublicacion, Monto: monto, Descripcion: descripcion, Id_usuario: idUsuario, Tipo_trabajo: tipoTrabajo, Estado: estado}, true</span>
+}
+
+func ActualizarTrabajo(consulta string, trabajo modelos.Trabajo) bool<span class="cov0" title="0">{
+        return GuardarTrabajo(consulta, trabajo)
+}</span>
+
+func EliminarTrabajo(consulta string, trabajo modelos.Trabajo) bool<span class="cov0" title="0">{
+        return GuardarTrabajo(consulta, trabajo)
+}</span>
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package repositorios
+
+import(
+        "database/sql"
+        "mizcuin/modelos"
+        "os"
+        "fmt"
+        _ "github.com/mattn/go-sqlite3"
+)
+
+var dbPathTrabajosAceptados string
+
+func init()<span class="cov0" title="0">{
+        dbPathTrabajosAceptados = os.Getenv("DB_PATH")
+}</span>
+
+//El booleano es para indicar si la operacion se realizo correctamente
+func GuardarTrabajoAceptado(consulta string, trabajo modelos.Trabajo_aceptado) bool<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPathTrabajosAceptados)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en trabajos aceptados", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        _, err = db.Exec(consulta, trabajo.Id_trabajo, trabajo.Id_usuario, trabajo.Fecha_aceptacion, trabajo.Estado_trabajo)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al ejecutar la consulta en trabajos aceptados", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">fmt.Println("Trabajo aceptado guardado correctamente: ", consulta)
+        return true</span>
+        
+}
+
+//Sirve para buscar la lista de todos los trabajos aceptados que se tienen registrados del usuario que se 
+// indica
+func BuscarIDUsuarioTrabajo(consulta string, id_usuario int) (modelos.ListaTrabajosAceptados, bool)<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPathTrabajosAceptados)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en trabajos aceptados", err)
+                return modelos.ListaTrabajosAceptados{}, false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        rows, err := db.Query(consulta, id_usuario)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al buscar el trabajo aceptado", err)
+                return modelos.ListaTrabajosAceptados{}, false
+        }</span>
+
+        <span class="cov0" title="0">defer rows.Close()
+
+        listaTrabajosAceptados := modelos.ListaTrabajosAceptados{}
+
+        for rows.Next() </span><span class="cov0" title="0">{
+                var idTrabajo int
+                var idUsuario int
+                var fechaAceptacion string
+                var estadoTrabajo string
+
+        err = rows.Scan(&amp;idTrabajo, &amp;idUsuario, &amp;fechaAceptacion, &amp;estadoTrabajo)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al buscar el trabajo aceptado", err)
+                return modelos.ListaTrabajosAceptados{}, false
+        }</span>
+
+        <span class="cov0" title="0">fmt.Println("Trabajo aceptado encontrado correctamente: ", consulta)
+
+        listaTrabajosAceptados.ListaTrabajos = append(listaTrabajosAceptados.ListaTrabajos, modelos.Trabajo_aceptado{Id_trabajo: idTrabajo, Id_usuario: idUsuario, Fecha_aceptacion: fechaAceptacion, Estado_trabajo: estadoTrabajo})</span>
+        }
+        <span class="cov0" title="0">return listaTrabajosAceptados, true</span>
+}
+
+func ActualizarTrabajoAceptado(consulta string, trabajo modelos.Trabajo_aceptado) bool<span class="cov0" title="0">{
+        return GuardarTrabajoAceptado(consulta, trabajo)
+}</span>
+
+func EliminarTrabajoAceptado(consulta string, trabajo modelos.Trabajo_aceptado) bool<span class="cov0" title="0">{
+        return GuardarTrabajoAceptado(consulta, trabajo)
+}</span>
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package repositorios
+
+import(
+        "database/sql"
+        "mizcuin/modelos"
+        "os"
+        "fmt"
+        _ "github.com/mattn/go-sqlite3"
+)
+
+var dbPath string
+
+func init()<span class="cov0" title="0">{
+        dbPath = os.Getenv("DB_PATH")
+}</span>
+
+func Guardar(consulta string, usuario modelos.Usuario) bool<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPath)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en usuario", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        _, err = db.Exec(consulta, usuario.Nombre, usuario.Apellido, usuario.Email, usuario.Telefono, usuario.Contraseña)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al ejecutar la consulta en usuario", err)
+                return false
+        }</span>
+
+        <span class="cov0" title="0">fmt.Println("Usuario guardado correctamente: ", consulta)
+        return true</span>
+        
+}
+
+func BuscarIdUsuario(consulta string, id_usuario int) (modelos.Usuario, bool)<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPath)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en usuario", err)
+                return modelos.Usuario{}, false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        row := db.QueryRow(consulta, id_usuario)
+
+        var idUsuario int
+        var nombre string
+        var apellido string
+        var email string
+        var telefono string
+        var contraseña string
+
+        err = row.Scan(&amp;idUsuario, &amp;nombre, &amp;apellido, &amp;email, &amp;telefono, &amp;contraseña)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al buscar el usuario en usuario", err)
+                return modelos.Usuario{}, false
+        }</span>
+
+        <span class="cov0" title="0">fmt.Println("Usuario encontrado correctamente: ", consulta)
+        return modelos.Usuario{Id_usuario: idUsuario, Nombre: nombre, Apellido: apellido, Email: email, Telefono: telefono, Contraseña: contraseña}, true</span>
+}
+
+// busco un usuario por su email para poder validar el login
+func BuscarPorEmail(email string) (modelos.Usuario, bool)<span class="cov0" title="0">{
+        db, err := sql.Open("sqlite3", dbPath)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al abrir la base de datos en usuario", err)
+                return modelos.Usuario{}, false
+        }</span>
+
+        <span class="cov0" title="0">defer db.Close()
+
+        consulta := "SELECT * FROM Usuario WHERE email = ?"
+        row := db.QueryRow(consulta, email)
+
+        var idUsuario int
+        var nombre string
+        var apellido string
+        var emailDB string
+        var telefono string
+        var contraseña string
+
+        err = row.Scan(&amp;idUsuario, &amp;nombre, &amp;apellido, &amp;emailDB, &amp;telefono, &amp;contraseña)
+
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("Error al buscar el usuario por email", err)
+                return modelos.Usuario{}, false
+        }</span>
+
+        <span class="cov0" title="0">return modelos.Usuario{Id_usuario: idUsuario, Nombre: nombre, Apellido: apellido, Email: emailDB, Telefono: telefono, Contraseña: contraseña}, true</span>
+}
+
+func Actualizar(consulta string, usuario modelos.Usuario) bool<span class="cov0" title="0">{
+        return Guardar(consulta, usuario)
+}</span>
+
+func Eliminar(consulta string, usuario modelos.Usuario) bool<span class="cov0" title="0">{
+        return Guardar(consulta, usuario)
+}</pre>
+		
+		<pre class="file" id="file12" style="display: none">package utils
+
+import (
+        "encoding/json"
+        "fmt"
+        "mizcuin/modelos"
+)
+
+func ConvertirUsuario(jsonModel []byte) (modelos.Usuario, error)<span class="cov8" title="1">{
+        var usuario modelos.Usuario
+        err := json.Unmarshal(jsonModel, &amp;usuario)
+        if err != nil </span><span class="cov8" title="1">{
+                return modelos.Usuario{}, fmt.Errorf("error al convertir el JSON a usuario: %v", err)
+        }</span>
+        <span class="cov8" title="1">return usuario, nil</span>
+}
+
+func ConvertirTrabajo(jsonModel []byte) (modelos.Trabajo, error)<span class="cov8" title="1">{
+        var trabajo modelos.Trabajo
+        err := json.Unmarshal(jsonModel, &amp;trabajo)
+        if err != nil </span><span class="cov8" title="1">{
+                return modelos.Trabajo{}, fmt.Errorf("error al convertir el JSON a trabajo: %v", err)
+        }</span>
+        <span class="cov8" title="1">return trabajo, nil</span>
+}
+
+func ConvertirTrabajoAceptado(jsonModel []byte) (modelos.Trabajo_aceptado, error)<span class="cov8" title="1">{
+        var trabajoAceptado modelos.Trabajo_aceptado
+        err := json.Unmarshal(jsonModel, &amp;trabajoAceptado)
+        if err != nil </span><span class="cov8" title="1">{
+                return modelos.Trabajo_aceptado{}, fmt.Errorf("error al convertir el JSON a trabajo aceptado: %v", err)
+        }</span>
+        <span class="cov8" title="1">return trabajoAceptado, nil</span>
+}
+
+func ConvertirImagen(jsonModel []byte) (modelos.Imagen, error)<span class="cov8" title="1">{
+        var imagen modelos.Imagen
+        err := json.Unmarshal(jsonModel, &amp;imagen)
+        if err != nil </span><span class="cov8" title="1">{
+                return modelos.Imagen{}, fmt.Errorf("error al convertir el JSON a imagen: %v", err)
+        }</span>
+        <span class="cov8" title="1">return imagen, nil</span>
+}
+
+func ConvertirMensajes(jsonModel []byte) (modelos.Mensajes, error)<span class="cov8" title="1">{
+        var mensajes modelos.Mensajes
+        err := json.Unmarshal(jsonModel, &amp;mensajes)
+        if err != nil </span><span class="cov8" title="1">{
+                return modelos.Mensajes{}, fmt.Errorf("error al convertir el JSON a mensajes: %v", err)
+        }</span>
+        <span class="cov8" title="1">return mensajes, nil</span>
+}
+
+func ConvertirMensajesRemitente(jsonModel []byte) (modelos.MensajesRemitente, error)<span class="cov8" title="1">{
+        var remitente modelos.MensajesRemitente
+        err := json.Unmarshal(jsonModel, &amp;remitente)
+        if err != nil </span><span class="cov8" title="1">{
+                return modelos.MensajesRemitente{}, fmt.Errorf("error al convertir el JSON a mensajes remitente: %v", err)
+        }</span>
+        <span class="cov8" title="1">return remitente, nil</span>
+}
+
+func ConvertirAnyToJSON(modelo any) ([]byte, error)<span class="cov8" title="1">{
+        jsonModel, err := json.Marshal(modelo)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("error al convertir el modelo a JSON: %v", err)
+        }</span>
+        <span class="cov8" title="1">return jsonModel, nil</span>
+}</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

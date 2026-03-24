@@ -1,73 +1,57 @@
 # TSP_HellDevs
-Aquí se subirán los códigos que se harán en la materia de TSP.
 
-Este repositorio contiene la plataforma que conecta a usuarios que ofrecen y buscan trabajos. El sistema se divide en dos partes principales: un **Backend** desarrollado en Go y un **Frontend** estructurado en HTML, CSS y JavaScript.
-
-## Estructura del Proyecto
-
-El proyecto está organizado en dos directorios principales: `backend/` y `frontend/`.
-
-### 1. Backend (`/backend`)
-El backend está construido con **Go (Golang)** y utiliza **SQLite** como motor de base de datos. Sigue una arquitectura organizada por modelos y repositorios.
-
-- **`/backend/app/models/`**: Contiene las definiciones de las estructuras de datos (structs) que representan las entidades del sistema y mapean las tablas de la base de datos para la comunicación mediante JSON.
-  - `Imagen.go`: Estructura para almacenar las imágenes relacionadas a un trabajo.
-  - `Mensajes.go`: Estructura de la comunicación y chat entre usuarios.
-  - `Trabajo.go`: Modelo principal que representa un trabajo o servicio publicado.
-  - `Trabajos_aceptados.go`: Registro de los trabajos en los que dos partes han llegado a un acuerdo.
-  - `Usuario.go`: Modelo con la información y credenciales de los usuarios registrados.
-
-- **`/backend/app/Repository/`**: Contiene la lógica de acceso a datos. Cada archivo interactúa mediante sentencias SQL (usando `github.com/mattn/go-sqlite3`) para crear, buscar, actualizar o eliminar registros en la base de datos.
-  - `ImagenSQLiteRepo.go`
-  - `MensajesSQLiteRepo.go`
-  - `TrabajoSQLiteRepo.go`
-  - `TrabajosAceptadosSQLiteRepo.go`
-  - `UsuarioSQLiteRepo.go`
-
-- **`/backend/docs/`**: Contiene la documentación técnica inicial y los esquemas.
-  - `sentencia.sql`: Archivo SQL que define la estructura inicial y creación de todas las tablas en la base de datos.
-
-- **Configuraciones de entorno**: `Dockerfile` y `docker-compose.yml` para facilitar la contenedorización, el despliegue del servidor y la base de datos.
-
-### 2. Frontend (`/frontend`)
-El frontend proporciona la interfaz gráfica web y consume los servicios expuestos por el backend. Los archivos están divididos semánticamente:
-
-- **`/frontend/html/`**: Las vistas y la estructura de las páginas que observa el usuario.
-  - `index.html`: Página principal e inicio del sistema.
-  - `servicios.html`: Tablón o explorador donde se listan todos los trabajos disponibles.
-  - `publicar_trabajo.html`: Formulario que permite a los usuarios publicar un nuevo trabajo.
-  - `mis_publicaciones.html`: Panel de gestión donde el usuario puede ver los trabajos que ha publicado.
-  - `trabajos_aceptados.html`: Interfaz para ver el estado de los trabajos acordados con otros usuarios.
-  - `chat.html`: Interfaz para enviar y recibir mensajes directos con otros usuarios.
-
-- **`/frontend/css/`**: Contiene los archivos de estilos (hojas de estilo) para asegurar una interfaz atractiva visualmente.
-  - `estilo_inicio.css`: Estilos para la landing page (`index.html`).
-  - `estilo_servicios.css`: Estilos visuales del listado de trabajos en `servicios.html`.
-  - `estilo_pubTra.css`: Estilos específicos para el formulario de `publicar_trabajo.html`.
-
-- **`/frontend/js/`**: Lógica del cliente. Estos archivos otorgan dinamismo a las páginas y realizan peticiones AJAX (por lo general usando `fetch`) a la API de Go.
-  - `servicios.js`: Se encarga de conectarse al backend, obtener los trabajos disponibles e inyectarlos dinámicamente en el DOM de `servicios.html`.
-  - `publicarTrabajo.js`: Captura los eventos del formulario en `publicar_trabajo.html`, valida los datos (y de ser necesario, procesa imágenes) y envía un payload en formato JSON hacia el backend.
+Plataforma que conecta a usuarios que ofrecen y buscan trabajos. El sistema se apoya fuertemente en un **Backend** desarrollado en Go (Golang) estructurado en capas, utilizando **SQLite** como motor de base de datos.
 
 ---
 
-## Relación entre Archivos y Funcionamiento del Sistema
+## 🏗️ Arquitectura del Backend
 
-La dinámica y flujo de datos del proyecto funciona de la siguiente manera:
+El backend está diseñado siguiendo una arquitectura de capas bien delimitadas para separar la responsabilidad de cada componente.
 
-1. **Capa de Presentación (Frontend HTML y CSS)**
-   El usuario ingresa al sistema (por ejemplo, navegando hacia `servicios.html`). El navegador lee el archivo HTML, renderiza la estructura de la página web e invoca al archivo CSS ligado (`estilo_servicios.css`) para darle la estética deseada.
+- **`/backend/app/interface/`**: Contiene el punto de entrada principal de la aplicación (`main.go`), el cual simplemente inicializa el servidor.
+- **`/backend/app/controladores/`**: Capa de presentación HTTP.
+  - `Router.go`: Define los enrutamientos (endpoints HTTP) y contiene los *handlers* que procesan las peticiones en primera instancia.
+  - `AuthMiddleware.go`: Intercepta las rutas protegidas, validando los tokens de sesión en memoria y permitiendo o denegando el acceso.
+- **`/backend/app/manejadores/`**: Capa de Lógica de Negocio. Aquí reside la inteligencia del sistema. Conecta los controladores con los repositorios, orquestando las acciones necesarias para cumplir con los casos de uso (ej. `GestionUsuario.go`, `MensajesManejador.go`, etc.).
+- **`/backend/app/repositorios/`**: Capa de Acceso a Datos. Interactúa directamente con la base de datos SQLite (`github.com/mattn/go-sqlite3`). Contiene las sentencias SQL puras para buscar, guardar, actualizar y eliminar (`UsuarioSQLiteRepo.go`, `TrabajoSQLiteRepo.go`, etc.).
+- **`/backend/app/modelos/`**: Definición de las entidades del sistema (structs en Go) como `Usuario`, `Trabajo`, `Mensajes`. Estas estructuras sirven como el contrato de datos que viaja a lo largo de todas las capas.
+- **`/backend/app/utils/`**: Funciones auxiliares genéricas. Destaca `ManejadorJSON.go`, responsable centralizado de transformar los payloads JSON crudos provenientes del cliente en structs de Go, y viceversa.
 
-2. **Interacción y Peticiones (Frontend JS)**
-   A través del archivo JavaScript (`servicios.js`), el cliente ejecuta código asíncrono para comunicarse un "endpoint" o URL proporcionada por el servidor Backend. Pide, por ejemplo, la lista de trabajos o manda un trabajo nuevo (`publicarTrabajo.js`).
+---
 
-3. **Procesamiento de Negocio y Base de Datos (Backend y Repositorios)**
-   El servidor en Go captura esa petición web y la procesa. 
-   - Invoca una función dentro de **`backend/app/Repository/`** correspondiente a la tarea, por ejemplo `BuscarIDTrabajo()` o `GuardarTrabajo()` en `TrabajoSQLiteRepo.go`.
-   - Estas funciones formulan las consultas SQL usando el archivo de la base de datos de SQLite, la cual fue creada siguiendo las tablas de `backend/docs/sentencia.sql`.
+## 🔄 Flujo de Datos: El ciclo de vida de una solicitud
 
-4. **Modelado y Retorno de Respuesta (Backend Models)**
-   Los resultados de las consultas SQL son emparejados e inyectados a las instancias de los modelos de Go localizados en **`backend/app/models/`**. Estos "structs" facilitan su posterior traducción a formato JSON.
+Cuando un cliente (Frontend o Consumidor API) realiza una solicitud al sistema, los datos atraviesan una serie de etapas secuenciales:
 
-5. **Actualización del DOM**
-   Finalmente, los archivos JSON viajan de regreso por la red hacia el Frontend (`.js`). El JavaScript procesa los datos JSON y los pinta en los bloques HTML generados dinámicamente, permitiendo al usuario ver, interactuar y completar sus tareas.
+### 1. Petición del Cliente
+El cliente envía una solicitud HTTP (GET, POST, PUT, DELETE) hacia un endpoint específico, típicamente alojando un payload de datos en formato JSON y un header `Authorization` si la ruta lo requiere.
+
+### 2. Router y Middleware de Autenticación
+El `Router.go` captura la solicitud en el puerto `:40000`. 
+- Si la ruta es pública (como `/login` o `POST /usuario`), pasa directo al handler.
+- Si es privada, es interceptada por `AuthMiddleware.go`, el cual verifica el token contra su mapa en memoria. Si el token es inválido, rechaza la solicitud (401 Unauthorized); si es válido, inyecta el `id_usuario` en la petición y permite avanzar.
+
+### 3. Controladores (Handlers HTTP)
+El Handler específico (ej. `usuarioHandler`) recibe la solicitud.
+- Verifica que el Método HTTP sea el correcto (switch method).
+- Lee los bytes del cuerpo de la petición (`leerBody`).
+
+### 4. Transformación de Datos (Utils)
+El controlador delega la conversión de esos bytes crudos a `ManejadorJSON.go`, el cual los decodifica e hidrata los Modelos (`structs` de Go).
+
+### 5. Lógica de Negocio (Manejadores)
+Con los objetos construidos, se invoca la función pertinente de la capa de **Manejadores** (ej. `GuardarUsuario(usuario)`). Aquí se aplicarían reglas de negocio complejas, comprobaciones adicionales o se orquestan múltiples repositorios.
+
+### 6. Acceso a Base de Datos (Repositorios)
+El Manejador delega la persistencia a la rama de **Repositorios**. Esta capa recibe el modelo de datos, forma la consulta SQL correspondientes (`INSERT`, `SELECT`, `UPDATE`) y la ejecuta contra el archivo `MIZCUIN.db` de SQLite. Retorna el éxito o fallo, y opcionalmente los datos recuperados de vuelta al manejador.
+
+### 7. Respuesta Final
+El flujo regresa en cascada: Repositorio -> Manejador -> Controlador. Finalmente, el Controlador toma la resolución, utiliza nuevamente los Utils para convertir el resultado a texto JSON, y emite la respuesta HTTP final al cliente (ej. `201 Created` o `200 OK`).
+
+---
+
+## 🐳 Despliegue (Docker)
+
+El backend cuenta con contenedores listos para su puesta en marcha fácil y rápida.
+- `app/Dockerfile`: Compilador multi-stage (Builder y Runtime) asegurando una imagen muy ligera y con CGO activado para el soporte nativo de SQLite.
+- `docker-compose.yml`: Orquestador principal que expone los recursos mapeando el volumen de datos para que la base de datos persista ante reinicios.
