@@ -1,35 +1,26 @@
-class Trabajo:
+class Mensaje:
     def __init__(
         self,
+        id_mensaje,
+        id_animalLover_emisor,
+        id_animalLover_receptor,
         id_trabajo,
-        nombre,
-        ubicacion,
-        fecha_publicacion,
-        monto,
-        descripcion,
-        id_usuario,
-        tipo_trabajo,
-        estado
+        contenido,
+        fecha_mensaje
     ):
+        self.id_mensaje = id_mensaje
+        self.id_animalLover_emisor = id_animalLover_emisor
+        self.id_animalLover_receptor = id_animalLover_receptor
         self.id_trabajo = id_trabajo
-        self.nombre = nombre
-        self.ubicacion = ubicacion
-        self.fecha_publicacion = fecha_publicacion
-        self.monto = monto
-        self.descripcion = descripcion
-        self.id_usuario = id_usuario
-        self.tipo_trabajo = tipo_trabajo
-        self.estado = estado
+        self.contenido = contenido
+        self.fecha_mensaje = fecha_mensaje
 
     def to_dict(self):
         return {
+            "id_mensaje": self.id_mensaje,
+            "id_animalLover_emisor": self.id_animalLover_emisor,
+            "id_animalLover_receptor": self.id_animalLover_receptor,
             "id_trabajo": self.id_trabajo,
-            "nombre": self.nombre,
-            "ubicacion": self.ubicacion,
-            "fecha_publicacion": self.fecha_publicacion,
-            "monto": self.monto,
-            "descripcion": self.descripcion,
-            "id_usuario": self.id_usuario,
-            "tipo_trabajo": self.tipo_trabajo,
-            "estado": self.estado
+            "contenido": self.contenido,
+            "fecha_mensaje": self.fecha_mensaje
         }

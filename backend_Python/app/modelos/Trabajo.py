@@ -7,7 +7,7 @@ class Trabajo:
         fecha_publicacion,
         monto,
         descripcion,
-        id_usuario,
+        id_animalLover_publicador,
         tipo_trabajo,
         estado
     ):
@@ -17,7 +17,7 @@ class Trabajo:
         self.fecha_publicacion = fecha_publicacion
         self.monto = monto
         self.descripcion = descripcion
-        self.id_usuario = id_usuario
+        self.id_animalLover_publicador = id_animalLover_publicador
         self.tipo_trabajo = tipo_trabajo
         self.estado = estado
 
@@ -29,7 +29,7 @@ class Trabajo:
             "fecha_publicacion": self.fecha_publicacion,
             "monto": self.monto,
             "descripcion": self.descripcion,
-            "id_usuario": self.id_usuario,
+            "id_animalLover_publicador": self.id_animalLover_publicador,
             "tipo_trabajo": self.tipo_trabajo,
             "estado": self.estado
         }

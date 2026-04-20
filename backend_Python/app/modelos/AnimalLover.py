@@ -1,26 +1,29 @@
 class AnimalLover:
     def __init__(
         self,
-        id_usuario: int,
-        nombre: str,
-        apellido: str,
-        email: str,
-        telefono: str,
-        contrasena: str
+        id_animalLover,
+        nombre,
+        apellido,
+        email,
+        telefono,
+        contrasena,
+        token=None
     ):
-        self.id_animal_lover = id_usuario
+        self.id_animalLover = id_animalLover
         self.nombre = nombre
         self.apellido = apellido
         self.email = email
         self.telefono = telefono
         self.contrasena = contrasena
+        self.token = token
 
     def to_dict(self):
         return {
-            "id_usuario": self.id_animal_lover,
+            "id_animalLover": self.id_animalLover,
             "nombre": self.nombre,
             "apellido": self.apellido,
             "email": self.email,
             "telefono": self.telefono,
-            "contraseña": self.contrasena
+            "contraseña": self.contrasena,
+            "token": self.token
         }
