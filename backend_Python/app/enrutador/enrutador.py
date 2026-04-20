@@ -16,13 +16,13 @@ app = FastAPI(title="API TSP_HellDevs")
 # que llega dentro del BODY de las peticiones HTTP (hace lo mismo que la funcion 'utils.Convertir' en Go).
 
 # Modelo usado exclusivamente para recibir las credenciales al intentar hacer Login
-class UsuarioLogin(BaseModel):
+class AnimalLoverLogin(BaseModel):
     email: str
     contraseña: str
 
 # Modelo que representa por completo a un Usuario, identico a la tabla en la base de datos
-class Usuario(BaseModel):
-    id_usuario: Optional[int] = None # Es Opcional porque al momento de crearlo (Registro), aun no tiene un ID
+class AnimalLover(BaseModel):
+    id_animalLover : Optional[int] = None # Es Opcional porque al momento de crearlo (Registro), aun no tiene un ID
     nombre: str
     apellido: str
     email: str
@@ -38,22 +38,22 @@ class Trabajo(BaseModel):
     fecha_publicacion: str
     monto: float
     descripcion: str
-    id_usuario: int
+    id_animalLover_publicador: int
     tipo_trabajo: str
     estado: str
 
 # Modelo intermedio que sirve para procesar cuando un trabajo es tomado o concluido por alguien mas
 class TrabajoAceptado(BaseModel):
     id_trabajo: int
-    id_usuario: int
+    id_animalLover_trabajador: int
     fecha_aceptacion: str
     estado_trabajo: str  # Segun SQL: CHECK(estado_trabajo IN ("Pendiente", "Terminado", "Cancelado"))
 
 # Modelo respectivo para el servicio de interaccion o chat de mensajería
 class Mensaje(BaseModel):
     id_mensaje: Optional[int] = None
-    id_usuario_envia: int
-    id_usuario_recibe: int
+    id_animalLover_emisor: int
+    id_animalLover_receptor: int
     id_trabajo: int
     contenido: str
     fecha_mensaje: str
@@ -63,44 +63,44 @@ class Mensaje(BaseModel):
 
 # El decorador @app.post("/login") indica que este bloque responde al metodo POST en la direccion o url '/login'
 @app.post("/login")
-def login_handler(usuario_login: UsuarioLogin):
+def login_handler(animalLover_login: AnimalLoverLogin):
     """ Este metodo recibe correo y contraseña; si son validos devuelve un Token de acceso """
     
     # AQUI IRIA LA CLASE DE MANEJOS DE BD (ej. RepositorioUsuario o ManejadorUsuario)
     
     # CODIGO BASE SIMULADO (MOCK) PARA MODIFICAR DESPUES
     encontrado = True # Simula que encontramos el usuario en la consulta a Base de Datos
-    usuario_db = Usuario(
-        id_usuario=1, nombre="Test", apellido="User", 
-        email=usuario_login.email, telefono="123456", 
+    animalLover_db = AnimalLover(
+        id_animalLover=1, nombre="Test", apellido="User", 
+        email=animalLover_login.email, telefono="123456", 
         contraseña="password"  # Asume que esta es la contraseña devuelta por SQLite o base de datos
     )
     
     # Verificamos si la validacion fallo (No lo encontro, o la clave es incorrecta)
-    if not encontrado or usuario_db.contraseña != usuario_login.contraseña:
+    if not encontrado or animalLover_db.contraseña != animalLover_login.contraseña:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="email o contraseña incorrectos"
         )
     
     # Si todo es correcto, generamos un token utilizando nuestra funcion del modulo AuthMiddleware
-    token = crear_sesion(usuario_db.id_usuario)
+    token = crear_sesion(animalLover_db.id_animalLover)
     
     # Retornamos los datos principales. En FastAPI, los JSON se construyen retornando un simple diccionario
     return {
         "token": token,
-        "id_usuario": usuario_db.id_usuario,
-        "nombre": f"{usuario_db.nombre} {usuario_db.apellido}"
+        "id_animalLover": animalLover_db.id_animalLover,
+        "nombre": f"{animalLover_db.nombre} {animalLover_db.apellido}"
     }
 
 
 # ==================== RUTAS DE USUARIOS ====================
 
-@app.post("/usuario", status_code=status.HTTP_201_CREATED)
-def registrar_usuario(usuario: Usuario):
+@app.post("/animalLover", status_code=status.HTTP_201_CREATED)
+def registrar_animalLover(animalLover: AnimalLover):
     """ Endpoint publico llamado cuando quieres registrar un nuevo usuario en la app (Signup) """
     
-    # AQUI IRIA LA CLASE DE MANEJOS DE BD para guardar (ManejadorUsuario)
+    # AQUI IRIA LA CLASE DE MANEJOS DE BD para guardar (ManejadorAnimalLover)
     
     # CODIGO BASE PARA MODIFICAR DESPUES
     ok = True
@@ -109,8 +109,8 @@ def registrar_usuario(usuario: Usuario):
     return {"mensaje": "usuario registrado correctamente"}
 
 
-@app.get("/usuario")
-def obtener_usuario(id: int):
+@app.get("/animalLover")
+def obtener_animalLover(id: int):
     """ Busca un usuario especifico basandose en el Query Parameter de la url (Ej. /usuario?id=1) """
     # En FastAPI colocar 'id: int' arriba atrapa automaticamente de la URL lo que venga en 'id'
     
@@ -121,16 +121,16 @@ def obtener_usuario(id: int):
     if not encontrado:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="usuario no encontrado")
     
-    usuario_db = Usuario(
-        id_usuario=id, nombre="Test", apellido="User", 
+    animalLover_db = AnimalLover(
+        id_animalLover=id, nombre="Test", apellido="User", 
         email="test@test.com", telefono="123456", 
         contraseña="" # Vaciamos explicitamente la contraseña para jamas enviarla en la respuesta
     )
-    return usuario_db
+    return animalLover_db
 
 
-@app.put("/usuario")
-def actualizar_usuario(usuario: Usuario):
+@app.put("/animalLover")
+def actualizar_animalLover(animalLover: AnimalLover):
     """ Modifica la informacion de un usuario proporcionando sus nuevos datos como JSON """
     
     # AQUI IRIA LA CLASE DE MANEJOS DE BD para aplicarle un update al usuario
@@ -142,8 +142,8 @@ def actualizar_usuario(usuario: Usuario):
     return {"mensaje": "usuario actualizado correctamente"}
 
 
-@app.delete("/usuario")
-def eliminar_usuario(usuario: Usuario):
+@app.delete("/animalLover")
+def eliminar_animalLover(animalLover: AnimalLover):
     """ Solicita dar de baja permanentemente una cuenta de usuario """
     
     # AQUI IRIA LA CLASE DE MANEJOS DE BD para ejecutar la eliminacion 
@@ -185,7 +185,7 @@ def obtener_trabajo(id: int):
     return Trabajo(
         id_trabajo=id, nombre="Ejemplo Trabajo", ubicacion="Ubicacion",
         fecha_publicacion="2026-04-19", monto=100.5, descripcion="Ejemplo Desc",
-        id_usuario=1, tipo_trabajo="Tipo", estado="Activo"
+        id_animalLover_publicador=1, tipo_trabajo="Tipo", estado="Activo"
     )
 
 
@@ -228,7 +228,7 @@ def aceptar_trabajo(trabajo: TrabajoAceptado):
 
 
 @app.get("/trabajo-aceptado", dependencies=[Depends(validar_sesion)])
-def listar_trabajos_aceptados(id_usuario: int):
+def listar_trabajos_aceptados(id_animalLover_trabajador: int):
     """ Retorna todos los trabajos que un usuario actualmente decidio aceptar y realizar """
     
     # AQUI IRIA LA CLASE DE MANEJOS DE BD (ManejadorTrabajoAceptado) para recuperar la lista de uno especifico
@@ -278,7 +278,7 @@ def enviar_mensaje(mensaje: Mensaje):
 
 
 @app.get("/mensaje", dependencies=[Depends(validar_sesion)])
-def listar_mensajes(id_usuario: int, id_trabajo: int):
+def listar_mensajes(id_animalLover: int, id_trabajo: int):
     """ Devuelve el hilo completo de la conversacion filtrado por un ID de Trabajo y el Usuario actual """
     # Nota: Los parametros vienen directamente de la url asi /mensaje?id_usuario=X&id_trabajo=X 
     
