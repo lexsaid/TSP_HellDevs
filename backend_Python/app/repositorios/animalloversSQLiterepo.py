@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from modelos.animallover import AnimalLover
+from modelos.AnimalLover import AnimalLover
 
 DB_PATH = os.getenv("DB_PATH")
 
