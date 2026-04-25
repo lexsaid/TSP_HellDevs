@@ -5,15 +5,6 @@
     box-sizing: border-box;
 }
 
-body {
-    background-color: #FAF7F7; /* Fondo oficial MIZCUIN */
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-}
 
 .login-container {
     width: 100%;

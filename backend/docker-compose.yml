@@ -1,12 +1,34 @@
-version: '3.8'
+
 
 services:
   mizcuin-api:
     build: 
       context: ./app
-    container_name: mizcui_api
-    ports:
-      - "8080:40000"
+    container_name: mizcuin_api
+    # ports:
+    #   - "8080:40000"  <-- LOS COMENTAMOS: Ya no los abrimos al público por seguridad
     environment:
-      - DB_PATH=/app/app/mizcuin.db
+      - DB_PATH=/app/mizcuin.db
+    volumes:
+      # 👇 Mapeamos archivo a archivo (del host al contenedor)
+      - ./app/mizcuin.db:/app/mizcuin.db
+    networks:
+      - nginx-network # 1. Conectamos la API a la red de Nginx
     restart: always
+
+  mizcuin-front:
+    build:
+      context: ../frontend
+    container_name: mizcuin_frontend
+    # ports:
+    #   - "8081:80"     <-- LOS COMENTAMOS: Solo Nginx podrá acceder al puerto 80 interno
+    depends_on:
+      - mizcuin-api
+    networks:
+      - nginx-network # 2. Conectamos el Frontend a la red de Nginx
+    restart: always
+
+# 3. Le decimos a este archivo que existe una red externa que ya fue creada
+networks:
+  nginx-network:
+    external: true

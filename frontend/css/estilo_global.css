@@ -1,0 +1,34 @@
+/* ========== CONFIGURACIÓN GLOBAL MIZCUIN ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #e2e8f0; /* Fondo general fuera de la app */
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Contenedor que simula un formato 9:16 en escritorio y ocupa 100% en móviles */
+.app-container {
+    width: 100%;
+    max-width: 400px; /* Ancho máximo simulando celular */
+    min-height: 100vh; /* Ocupa al menos la pantalla completa */
+    background-color: #FAF7F7; /* Fondo oficial MIZCUIN */
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+/* En dispositivos móviles, quita el box-shadow y max-width si es necesario */
+@media (max-width: 400px) {
+    .app-container {
+        box-shadow: none;
+    }
+}

@@ -5,39 +5,27 @@
   box-sizing: border-box;
 }
 
-body {
-  /* Usamos el color de fondo suave de MIZCUIN para coherencia */
-  background-color: #FAF7F7; 
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  /* Eliminamos el flex y padding para que no se vea como una tarjeta flotante */
-  margin: 0;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-}
-
 /* ========== CONTENEDOR PANTALLA COMPLETA ========== */
 .chat {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100vh; /* Ocupa todo el alto del dispositivo */
+  height: 100vh;
+  /* Ocupa todo el alto del dispositivo */
   background: white;
 }
 
 /* ========== CABECERA (Header) ========== */
 header {
-  /* Azul consistente con la pantalla de Servicios y Detalles */
-  background-color: #6a96f1; 
-  padding: 15px 20px;
+  background: linear-gradient(95deg, #5e17eb, #7c3aed);
+  padding: 18px 20px;
   color: white;
   font-weight: 700;
   font-size: 1.2rem;
   display: flex;
   align-items: center;
   gap: 15px;
-  /* Sombra sutil para dar profundidad */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(94, 23, 235, 0.2);
   z-index: 10;
 }
 
@@ -58,27 +46,44 @@ header {
   flex-direction: column;
   gap: 12px;
   /* Fondo con el gris/blanco suave de la app */
-  background-color: #FAF7F7; 
+  background-color: #FAF7F7;
 }
 
 .msg {
-  max-width: 80%; /* Para que no ocupen todo el ancho en pantallas grandes */
+  max-width: 80%;
+  /* Para que no ocupen todo el ancho en pantallas grandes */
   padding: 12px 16px;
   border-radius: 18px;
   font-size: 0.95rem;
   line-height: 1.4;
   position: relative;
   animation: fadeSlideUp 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.msg-date {
+  font-size: 0.7rem;
+  margin-top: 6px;
+  opacity: 0.7;
+  text-align: right;
 }
 
 @keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Mis mensajes (Verde) */
+/* Mis mensajes (Morado) */
 .me {
-  background-color: #22c55e;
+  background-color: #5e17eb;
   color: white;
   align-self: flex-end;
   border-bottom-right-radius: 4px;
@@ -90,7 +95,7 @@ header {
   color: #1e293b;
   align-self: flex-start;
   border-bottom-left-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* ========== ÁREA DE ENTRADA DE TEXTO ========== */
@@ -102,7 +107,7 @@ header {
   gap: 12px;
   align-items: center;
   /* Espacio extra abajo para que no choque con la barra de gestos del celular */
-  padding-bottom: 25px; 
+  padding-bottom: 25px;
 }
 
 /* Botón de Adjuntar (+) */
@@ -112,7 +117,8 @@ header {
   border: none;
   width: 45px;
   height: 45px;
-  border-radius: 50%; /* Más redondeado para estilo móvil */
+  border-radius: 50%;
+  /* Más redondeado para estilo móvil */
   font-size: 1.5rem;
   cursor: pointer;
   display: flex;
@@ -130,7 +136,8 @@ header {
   flex: 1;
   background: #f8fafc;
   border: 1.5px solid #e2e8f0;
-  border-radius: 25px; /* Bordes muy redondeados tipo WhatsApp/Messenger */
+  border-radius: 25px;
+  /* Bordes muy redondeados tipo WhatsApp/Messenger */
   padding: 12px 20px;
   font-size: 1rem;
   outline: none;
@@ -143,7 +150,8 @@ header {
 
 /* Botón de enviar (Flecha) */
 .send-btn {
-  background-color: #5e17eb; /* Morado distintivo de tus botones */
+  background-color: #5e17eb;
+  /* Morado distintivo de tus botones */
   border: none;
   width: 45px;
   height: 45px;

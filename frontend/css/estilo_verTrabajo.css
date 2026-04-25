@@ -1,34 +1,25 @@
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #FAF7F7; /* El color de fondo que quieres */
-    display: block; /* Cambia de flex a block si quieres que el contenido fluya normal */
-}
-
-/* Busca el contenedor que envuelve todo */
-.card-detalle, .mobile-container {
-    width: 100%;       /* Asegura que ocupe el 100% del ancho */
-    max-width: none;   /* ELIMINA cualquier max-width que diga 400px o similar */
-    min-height: 100vh; /* Que ocupe todo el largo de la pantalla */
-    margin: 0;         /* Quita los márgenes automáticos */
-    border-radius: 0;  /* Quita los bordes redondeados de las esquinas exteriores si quieres que pegue al borde */
-    border: none;      /* Quita cualquier borde gris que esté haciendo de marco */
-}
+/* Estilos de Detalles de Trabajo Premium */
 
 /* Header */
 .header-detalle {
-    background-color: #6a96f1;
-    padding: 15px;
+    background: linear-gradient(95deg, #5e17eb, #7c3aed);
+    padding: 18px 20px;
     display: flex;
     align-items: center;
     color: white;
+    box-shadow: 0 4px 15px rgba(94, 23, 235, 0.2);
 }
 
 .back-link {
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     margin-right: 20px;
     text-decoration: none;
+    transition: transform 0.2s;
+}
+
+.back-link:active {
+    transform: scale(0.9);
 }
 
 .titulo-app {
@@ -36,80 +27,150 @@ body {
     margin: 0;
     flex-grow: 1;
     text-align: center;
+    font-weight: 700;
 }
 
-/* Imagen */
-.imagen-container {
+/* Imagen y Carrusel */
+.carousel-container {
     width: 90%;
-    margin: 15px auto;
+    margin: 20px auto;
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
-.img-trabajo {
+.carousel-track {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
     width: 100%;
-    border-radius: 10px;
+}
+
+.carousel-track img {
+    min-width: 100%;
+    height: 200px;
+    object-fit: cover;
     display: block;
 }
 
-/* Cajas de Texto (Estilo Referencia) */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.8);
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+    color: #5e17eb;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+/* Cajas de Texto (Estilo Premium) */
 .info-container {
     padding: 0 20px;
 }
 
 .info-box {
-    border: 2px solid #333;
-    border-radius: 8px;
-    padding: 10px;
+    border: 1px solid #f1f5f9;
+    border-radius: 15px;
+    padding: 15px;
     margin-bottom: 12px;
-    background: #fff;
-    color: #333;
+    background: white;
+    color: #1e293b;
     font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+
+.title-box {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #5e17eb;
 }
 
 .desc-box {
     min-height: 100px;
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
 .location-box {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: #475569;
 }
 
-.icon-map { color: #ccc; }
+.icon-map { color: #5e17eb; font-size: 1.2rem; }
 
 .row-info {
     display: flex;
     gap: 10px;
 }
 
-.half { width: 50%; font-size: 0.85rem; }
+.half { 
+    width: 50%; 
+    font-size: 0.9rem; 
+    text-align: center;
+    color: #1e293b;
+    font-weight: 600;
+}
 
 .timer-box {
     text-align: center;
-    width: 60%;
+    width: 100%;
     margin: 20px auto;
+    background: #f8fafc;
+    color: #64748b;
+}
+.timer-box span {
+    color: #ef4444;
+    font-weight: 700;
+    margin-left: 5px;
 }
 
 /* Botones Inferiores */
 .footer-acciones {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    gap: 15px;
     padding: 20px;
-    background: #f1f1f1;
+    background: transparent;
 }
 
 .btn-aceptar, .btn-contactar {
-    width: 45%;
-    padding: 12px;
+    flex: 1;
+    padding: 14px;
     border: none;
-    border-radius: 8px;
+    border-radius: 15px;
     color: white;
-    font-weight: bold;
+    font-weight: 700;
     cursor: pointer;
     font-size: 1rem;
-    background-color: #3b66ad; /* Azul de tu referencia */
+    box-shadow: 0 4px 15px rgba(94, 23, 235, 0.2);
+    transition: all 0.3s;
+}
+
+.btn-aceptar {
+    background: linear-gradient(95deg, #5e17eb, #7c3aed);
+}
+
+.btn-contactar {
+    background: white;
+    color: #5e17eb;
+    border: 2px solid #5e17eb;
+    box-shadow: none;
 }
 
 .btn-aceptar:active, .btn-contactar:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
 }
