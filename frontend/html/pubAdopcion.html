@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Publicar en Adopción</title>
+    <!-- Usar la fuente Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/estilo_adopcion.css">
+</head>
+<body>
+    <div class="card">
+        <a href="comunidad.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <h2><i class="fa-solid fa-heart"></i> Adopción Animal</h2>
+
+        <form id="postAdopcionForm">
+            <div class="form-group">
+                <label for="nombre">Nombre de la Mascota</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Ej. Firulais" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tipo_animal">Tipo de Animal</label>
+                <select id="tipo_animal" name="tipo_animal" required>
+                    <option value="" disabled selected>Selecciona un tipo</option>
+                    <option value="Perro">Perro</option>
+                    <option value="Gato">Gato</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tamanio">Tamaño</label>
+                <select id="tamanio" name="tamanio" required>
+                    <option value="" disabled selected>Selecciona un tamaño</option>
+                    <option value="Pequeño">Pequeño</option>
+                    <option value="Mediano">Mediano</option>
+                    <option value="Grande">Grande</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="color">Color principal</label>
+                <input type="text" id="color" name="color" placeholder="Ej. Blanco con manchas negras" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edad">Edad aproximada (meses)</label>
+                <input type="number" id="edad" name="edad" placeholder="Ej. 2" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="direccion">Ubicación / Dirección</label>
+                <input type="text" id="direccion" name="direccion" placeholder="Ej. Colonia Centro, Calle 5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="discapacidad">Discapacidad / Condición médica</label>
+                <input type="text" id="discapacidad" name="discapacidad" placeholder="Ej. Ninguna, Sordo, Falta una patita" required>
+            </div>
+
+            <div class="form-group">
+                <label for="vacunas">Vacunas (Todas las que tiene)</label>
+                <input type="text" id="vacunas" name="vacunas" placeholder="Ej. Rabia, Parvovirus (o Ninguna)" required>
+            </div>
+
+            <div class="form-group">
+                <label for="detalles_adicionales">Detalles Adicionales / Comportamiento</label>
+                <textarea id="detalles_adicionales" name="detalles_adicionales" placeholder="Es muy juguetón, convive con otros perros..." required></textarea>
+            </div>
+
+            <!-- Fotos -->
+            <div class="form-group">
+                <label>Fotos de la mascota</label>
+                <input type="file" id="fotos" accept="image/*" multiple>
+                <div class="image-preview" id="imagePreview"></div>
+            </div>
+
+            <button type="submit">Publicar Adopción</button>
+        </form>
+    </div>
+    <script src="../js/pubAdopcion.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dar de alta un albergue</title>
+    <!-- Usar la fuente Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/estilo_albergue.css">
+</head>
+<body>
+    <div class="card">
+        <a href="servicios.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <h2><i class="fa-solid fa-house-chimney-paw"></i> Alta de Albergue</h2>
+
+        <form id="postAlbergueForm">
+            <div class="form-group">
+                <label for="ubicacion">Ubicación</label>
+                <input type="text" id="ubicacion" name="ubicacion" placeholder="Dirección del albergue" required>
+            </div>
+
+            <div class="form-group">
+                <label for="capacidad">Capacidad (Lugares disponibles)</label>
+                <input type="number" id="capacidad" name="capacidad" placeholder="Ej. 10" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="preferencia">Preferencia de Especie</label>
+                <select id="preferencia" name="preferencia" required>
+                    <option value="" disabled selected>Selecciona una opción</option>
+                    <option value="Perros">Perros</option>
+                    <option value="Gatos">Gatos</option>
+                    <option value="Ambos">Ambos</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="costo_diario">Costo Diario ($MXN)</label>
+                <input type="number" id="costo_diario" name="costo_diario" placeholder="Ej. 150" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pre_requisitos">Prerrequisitos de Ingreso</label>
+                <textarea id="pre_requisitos" name="pre_requisitos" placeholder="Ej. Desparasitado, cartilla de vacunación al día..." required></textarea>
+            </div>
+
+            <!-- Fotos -->
+            <div class="form-group">
+                <label>Fotos de las instalaciones</label>
+                <input type="file" id="fotos" accept="image/*" multiple>
+                <div class="image-preview" id="imagePreview"></div>
+            </div>
+
+            <button type="submit">Dar de alta albergue</button>
+        </form>
+    </div>
+    <script src="../js/pubAlbergue.js"></script>
+</body>
+</html>

@@ -10,8 +10,8 @@ except ImportError:
     from backports.zoneinfo import ZoneInfo # En caso de que se necesite soporte antiguo, aunque python 3.11 lo trae nativo.
 
 from enrutador.AuthMiddleware import crearSesion, validarSesion
-from modelos.modelos import AnimalLoverLogin, AnimalLover, Trabajo, TrabajoAceptado, Mensaje
-from manejadores import gestionUsuario, gestionTrabajo, gestionTrabajosAceptados, gestionMensajes
+from modelos.modelos import AnimalLoverLogin, AnimalLover, Trabajo, TrabajoAceptado, Mensaje, Albergue, AnimalPerdido, AnimalCalle
+from manejadores import gestionUsuario, gestionTrabajo, gestionTrabajosAceptados, gestionMensajes, gestionAlbergues, gestionMasPerdidas, gestionAdopciones
 from repositorios import usuarioRepo, imagenRepo
 
 app = FastAPI(title="API TSP_HellDevs")
@@ -234,6 +234,75 @@ def eliminarMensaje(idMensaje: int):
     if not gestionMensajes.eliminarMensaje(idMensaje):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo eliminar el mensaje")
     return {"mensaje": "mensaje eliminado correctamente"}
+
+# ==================== COMUNIDAD: ALBERGUES ====================
+
+@app.post("/albergues", status_code=status.HTTP_201_CREATED, dependencies=[Depends(validarSesion)])
+def crear_albergue(albergue: Albergue):
+    if not gestionAlbergues.crearAlbergue(albergue):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo crear el albergue")
+    return {"mensaje": "albergue creado correctamente"}
+
+@app.get("/albergues", dependencies=[Depends(validarSesion)])
+def obtener_albergues():
+    lista, encontrado = gestionAlbergues.obtenerTodosLosAlbergues()
+    if not encontrado:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="no se encontraron albergues")
+    return lista
+
+@app.put("/albergues", dependencies=[Depends(validarSesion)])
+def actualizar_albergue(albergue: Albergue):
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
+
+@app.delete("/albergues", dependencies=[Depends(validarSesion)])
+def eliminar_albergue(id_albergue: int):
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
+
+# ==================== COMUNIDAD: MASCOTAS PERDIDAS ====================
+
+@app.post("/mascotas_perdidas", status_code=status.HTTP_201_CREATED, dependencies=[Depends(validarSesion)])
+def crear_mascota_perdida(mascota: AnimalPerdido):
+    if not gestionMasPerdidas.reportarMascotaPerdida(mascota):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo reportar la mascota perdida")
+    return {"mensaje": "mascota perdida reportada correctamente"}
+
+@app.get("/mascotas_perdidas", dependencies=[Depends(validarSesion)])
+def obtener_mascotas_perdidas():
+    lista, encontrado = gestionMasPerdidas.obtenerMascotasPerdidas()
+    if not encontrado:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="no se encontraron mascotas perdidas")
+    return lista
+
+@app.put("/mascotas_perdidas", dependencies=[Depends(validarSesion)])
+def actualizar_mascota_perdida(mascota: AnimalPerdido):
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
+
+@app.delete("/mascotas_perdidas", dependencies=[Depends(validarSesion)])
+def eliminar_mascota_perdida(id_animal_perdido: int):
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
+
+# ==================== COMUNIDAD: ADOPCIONES ====================
+
+@app.post("/adopciones", status_code=status.HTTP_201_CREATED, dependencies=[Depends(validarSesion)])
+def crear_adopcion(adopcion: AnimalCalle):
+    if not gestionAdopciones.publicarAdopcion(adopcion):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo publicar la adopción")
+    return {"mensaje": "adopción publicada correctamente"}
+
+@app.get("/adopciones", dependencies=[Depends(validarSesion)])
+def obtener_adopciones():
+    lista, encontrado = gestionAdopciones.obtenerAdopciones()
+    if not encontrado:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="no se encontraron adopciones")
+    return lista
+
+@app.put("/adopciones", dependencies=[Depends(validarSesion)])
+def actualizar_adopcion(adopcion: AnimalCalle):
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
+
+@app.delete("/adopciones", dependencies=[Depends(validarSesion)])
+def eliminar_adopcion(id_animal_calle: int):
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
 
 def IniciarServidor():
     print("Servidor iniciado en el puerto 40000")

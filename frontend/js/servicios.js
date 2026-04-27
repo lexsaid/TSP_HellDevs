@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const myIdStr = localStorage.getItem('idAnimalLover');
-    if (!myIdStr) {
-        window.location.href = 'login.html';
-        return;
-    }
+    // const myIdStr = localStorage.getItem('idAnimalLover');
+    // if (!myIdStr) {
+    //     window.location.href = 'login.html';
+    //     return;
+    // }
 
-    // Validar sesión
-    try {
-        await window.apiFetch(`/animalLover?id=${myIdStr}`);
-    } catch (e) {
-        console.error("Error validando sesión:", e);
-    }
+    // // Validar sesión
+    // try {
+    //     await window.apiFetch(`/animalLover?id=${myIdStr}`);
+    // } catch (e) {
+    //     console.error("Error validando sesión:", e);
+    // }
 
     const emptyState = document.getElementById("emptyState");
     const jobList = document.getElementById("jobList");

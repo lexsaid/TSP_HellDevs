@@ -1,0 +1,168 @@
+/* ========== RESET Y ESTILOS GLOBALES ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #FAF7F7;
+}
+
+/* ========== CONTENEDOR PRINCIPAL (PANTALLA COMPLETA) ========== */
+.card {
+    width: 100%;       /* Ocupa todo el ancho del celular */
+    max-width: 480px;  /* Para emular un 9:16 si se abre en pantallas más grandes */
+    margin: 0 auto;
+    background-color: #FAF7F7; 
+    min-height: 100vh;
+    padding: 20px;     /* Espacio interno para que el contenido no toque los bordes */
+    border-radius: 0;  /* Sin esquinas redondeadas exteriores */
+    box-shadow: none;  /* Sin sombra exterior para que no parezca una tarjeta flotante */
+    animation: fadeUp 0.5s ease;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== BOTÓN DE REGRESO ========== */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: white;
+    color: #5e17eb;
+    border-radius: 50%;
+    text-decoration: none;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.back-btn:active {
+    transform: scale(0.9);
+}
+
+/* ========== TÍTULO DE LA SECCIÓN ========== */
+h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #5e17eb, #8b5cf6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 20px;
+    padding-left: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ========== ESTILO DEL FORMULARIO ========== */
+#postForm {
+    background: white;
+    padding: 25px 20px;
+    border-radius: 30px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 8px;
+    color: #1e293b;
+    padding-left: 5px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1.5px solid #f1f5f9;
+    border-radius: 18px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: #f8fafc;
+    outline: none;
+    transition: all 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #5e17eb;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(94, 23, 235, 0.1);
+}
+
+textarea {
+    resize: none;
+    min-height: 100px;
+}
+
+/* ========== VISTA PREVIA DE IMÁGENES ========== */
+.image-preview {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.preview-item {
+    position: relative;
+    width: 75px;
+    height: 75px;
+}
+
+.preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 2px solid #5e17eb;
+}
+
+.close-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+/* ========== BOTÓN PRINCIPAL ========== */
+button[type="submit"] {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(95deg, #5e17eb, #7c3aed);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 15px;
+    box-shadow: 0 8px 20px rgba(94, 23, 235, 0.3);
+    transition: all 0.3s;
+}
+
+button[type="submit"]:active {
+    transform: scale(0.96);
+}

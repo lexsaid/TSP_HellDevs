@@ -43,3 +43,54 @@ class Imagen(BaseModel):
     idImagen: Optional[int] = None
     idTrabajo: int
     imagen: bytes
+
+class Animal(BaseModel):
+    idAnimal: Optional[int] = None
+    idAnimalLover: int
+    nombre: str
+    direccion: str
+    tamanio: str
+    color: str
+    discapacidad: str
+    tipoAnimal: str
+    edad: int
+    detallesAdicionales: Optional[str] = None
+    imagenesBase64: Optional[list[str]] = []
+
+class AnimalPerdido(Animal):
+    idAnimalPerdido: Optional[int] = None
+    recompensa: str
+
+class AnimalCalle(Animal):
+    idAnimalCalle: Optional[int] = None
+    vacunas: str
+
+class Albergue(BaseModel):
+    idAlbergue: Optional[int] = None
+    idAnimalLover: int
+    nombre: str
+    ubicacion: str
+    capacidad: int
+    preferencia: str
+    costoDiario: int
+    preRequisitos: str
+    imagenesBase64: Optional[list[str]] = []
+
+class AnimalLoverDetalle(BaseModel):
+    idAnimalLover: int
+    nombre: str
+    apellido: str
+    telefono: str
+    email: str
+
+class MascotaPerdidaDetalle(BaseModel):
+    mascotaPerdida: AnimalPerdido
+    dueño: AnimalLoverDetalle
+    
+class AdopcionDetalle(BaseModel):
+    adopcion: AnimalCalle
+    publicador: AnimalLoverDetalle
+
+class AlbergueDetalle(BaseModel):
+    albergue: Albergue
+    dueño: AnimalLoverDetalle
