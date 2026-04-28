@@ -24,27 +24,122 @@ document.addEventListener('DOMContentLoaded', async () => {
     const idTrabajo = idTrabajoStr ? parseInt(idTrabajoStr) : 1;
     const idReceptor = idReceptorStr ? parseInt(idReceptorStr) : 2;
 
-    // Cargar detalles del trabajo (para el banner)
-    try {
-        const resTrabajo = await window.apiFetch(`/trabajo?id=${idTrabajo}`);
-        if (resTrabajo && resTrabajo.ok) {
-            const trabajo = await resTrabajo.json();
-            document.getElementById('jobName').textContent = trabajo.nombre;
-            document.getElementById('jobPrice').textContent = `$${trabajo.monto}`;
-            document.getElementById('chatTitle').textContent = `Chat: ${trabajo.nombre}`;
+    const btnVer = document.getElementById('btnVerTrabajo');
+    const jobNameEl = document.getElementById('jobName');
+    const jobPriceEl = document.getElementById('jobPrice');
 
-            const btnVer = document.getElementById('btnVerTrabajo');
-            if (btnVer) {
-                btnVer.addEventListener('click', () => {
-                    localStorage.setItem('idTrabajoSeleccionado', idTrabajo);
-                    window.location.href = 'ver_trabajo_del_otro.html';
-                });
+    function setBannerNoDisponible(texto) {
+        jobNameEl.textContent = texto;
+        jobPriceEl.textContent = '';
+        if (btnVer) {
+            btnVer.disabled = true;
+            btnVer.style.opacity = '0.6';
+            btnVer.style.cursor = 'not-allowed';
+        }
+    }
+
+    function setBannerInfo({
+        titulo,
+        subtexto,
+        botonTexto,
+        onClick,
+        chatTitulo
+    }) {
+        jobNameEl.textContent = titulo;
+        jobPriceEl.textContent = subtexto || '';
+        if (chatTitulo) {
+            document.getElementById('chatTitle').textContent = chatTitulo;
+        }
+        if (btnVer && botonTexto && onClick) {
+            btnVer.textContent = botonTexto;
+            btnVer.addEventListener('click', onClick);
+        }
+    }
+
+    // Cargar detalles del trabajo/albergue/mascota (para el banner)
+    try {
+        if (idTrabajo < 0) {
+            if (idTrabajo <= -2000000) {
+                const idAnimal = -idTrabajo - 2000000;
+                const resAdop = await window.apiFetch(`/adopciones/detalle?id_animal=${idAnimal}`);
+                if (resAdop && resAdop.ok) {
+                    const detalle = await resAdop.json();
+                    const adopcion = detalle.adopcion || {};
+                    setBannerInfo({
+                        titulo: adopcion.nombre || 'Adopcion sin nombre',
+                        subtexto: 'En adopcion',
+                        botonTexto: 'Ver adopcion',
+                        chatTitulo: `Chat: ${adopcion.nombre || 'Adopcion'}`,
+                        onClick: () => {
+                            window.location.href = `ver_adopcion.html?idAnimal=${idAnimal}`;
+                        }
+                    });
+                } else {
+                    setBannerNoDisponible('Adopcion no encontrada');
+                }
+            } else if (idTrabajo <= -1000000) {
+                const idAnimal = -idTrabajo - 1000000;
+                const resPerd = await window.apiFetch(`/mascotas_perdidas/detalle?id_animal=${idAnimal}`);
+                if (resPerd && resPerd.ok) {
+                    const detalle = await resPerd.json();
+                    const perdida = detalle.mascotaPerdida || {};
+                    setBannerInfo({
+                        titulo: perdida.nombre || 'Mascota sin nombre',
+                        subtexto: 'Mascota perdida',
+                        botonTexto: 'Ver reporte',
+                        chatTitulo: `Chat: ${perdida.nombre || 'Mascota perdida'}`,
+                        onClick: () => {
+                            window.location.href = `ver_mascota_perdida.html?idAnimal=${idAnimal}`;
+                        }
+                    });
+                } else {
+                    setBannerNoDisponible('Mascota no encontrada');
+                }
+            } else {
+                const idAlbergue = Math.abs(idTrabajo);
+                const resAlbergue = await window.apiFetch(`/albergue?id=${idAlbergue}`);
+                if (resAlbergue && resAlbergue.ok) {
+                    const detalle = await resAlbergue.json();
+                    const albergue = detalle.albergue || {};
+                    setBannerInfo({
+                        titulo: albergue.nombre || 'Albergue sin nombre',
+                        subtexto: `$${albergue.costoDiario ?? '--'} / dia`,
+                        botonTexto: 'Ver albergue',
+                        chatTitulo: `Chat: ${albergue.nombre || 'Albergue'}`,
+                        onClick: () => {
+                            localStorage.setItem('albergueSeleccionado', JSON.stringify(detalle));
+                            window.location.href = 'ver_albergue.html';
+                        }
+                    });
+                } else {
+                    setBannerNoDisponible('Albergue no encontrado');
+                }
             }
         } else {
-            document.getElementById('jobName').textContent = "Trabajo no encontrado";
+            const resTrabajo = await window.apiFetch(`/trabajo?id=${idTrabajo}`);
+            if (resTrabajo && resTrabajo.ok) {
+                const trabajo = await resTrabajo.json();
+                setBannerInfo({
+                    titulo: trabajo.nombre,
+                    subtexto: `$${trabajo.monto}`,
+                    botonTexto: 'Ver publicacion',
+                    chatTitulo: `Chat: ${trabajo.nombre}`,
+                    onClick: () => {
+                        localStorage.setItem('idTrabajoSeleccionado', idTrabajo);
+                        window.location.href = 'ver_trabajo_del_otro.html';
+                    }
+                });
+            } else {
+                setBannerNoDisponible('Trabajo no encontrado');
+            }
         }
     } catch (e) {
-        console.error("Error al cargar trabajo", e);
+        console.error('Error al cargar detalles', e);
+        if (idTrabajo < 0) {
+            setBannerNoDisponible('Publicacion no encontrada');
+        } else {
+            setBannerNoDisponible('Trabajo no encontrado');
+        }
     }
 
     let loadedMessageIds = new Set();

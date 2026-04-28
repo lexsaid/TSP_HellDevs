@@ -11,7 +11,7 @@ except ImportError:
 
 from enrutador.AuthMiddleware import crearSesion, validarSesion
 from modelos.modelos import AnimalLoverLogin, AnimalLover, Trabajo, TrabajoAceptado, Mensaje, Albergue, AnimalPerdido, AnimalCalle
-from manejadores import gestionUsuario, gestionTrabajo, gestionTrabajosAceptados, gestionMensajes, gestionAlbergues, gestionMasPerdidas, gestionAdopciones
+from manejadores import gestionUsuario, gestionTrabajo, gestionTrabajosAceptados, gestionMensajes, gestionAlbergues, gestionMasPerdidas, gestionAdopciones, gestionImagenes
 from repositorios import usuarioRepo, imagenRepo
 
 app = FastAPI(title="API TSP_HellDevs")
@@ -113,6 +113,13 @@ def obtenerTrabajo(id: int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="trabajo no encontrado")
     return trabajo
 
+@app.get("/albergue", dependencies=[Depends(validarSesion)])
+def obtenerAlbergue(id: int):
+    detalle, encontrado = gestionAlbergues.obtenerAlbergue(id)
+    if not encontrado:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="albergue no encontrado")
+    return detalle
+
 @app.get("/trabajos", dependencies=[Depends(validarSesion)])
 def obtenerTodosLosTrabajos():
     lista, encontrado = gestionTrabajo.obtenerTodosLosTrabajos()
@@ -143,6 +150,42 @@ def obtenerImagenTrabajoPorIndice(id_trabajo: int, index: int):
     if not encontrado or not imagenes or index >= len(imagenes) or index < 0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Imagen no encontrada")
     return Response(content=imagenes[index].imagen, media_type="image/jpeg")
+
+@app.get("/animal/{id_animal}/imagen")
+def obtenerImagenAnimal(id_animal: int):
+    imagen, encontrado = gestionImagenes.obtenerImagenAnimal(id_animal)
+    if not encontrado:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Imagen no encontrada")
+    return Response(content=imagen, media_type="image/jpeg")
+
+@app.get("/animal/{id_animal}/imagenes_info")
+def obtenerInfoImagenesAnimal(id_animal: int):
+    return gestionImagenes.obtenerInfoImagenesAnimal(id_animal)
+
+@app.get("/animal/{id_animal}/imagen_index/{index}")
+def obtenerImagenAnimalPorIndice(id_animal: int, index: int):
+    imagen, encontrado = gestionImagenes.obtenerImagenAnimalPorIndice(id_animal, index)
+    if not encontrado:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Imagen no encontrada")
+    return Response(content=imagen, media_type="image/jpeg")
+
+@app.get("/albergue/{id_albergue}/imagen")
+def obtenerImagenAlbergue(id_albergue: int):
+    imagen, encontrado = gestionImagenes.obtenerImagenAlbergue(id_albergue)
+    if not encontrado:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Imagen no encontrada")
+    return Response(content=imagen, media_type="image/jpeg")
+
+@app.get("/albergue/{id_albergue}/imagenes_info")
+def obtenerInfoImagenesAlbergue(id_albergue: int):
+    return gestionImagenes.obtenerInfoImagenesAlbergue(id_albergue)
+
+@app.get("/albergue/{id_albergue}/imagen_index/{index}")
+def obtenerImagenAlberguePorIndice(id_albergue: int, index: int):
+    imagen, encontrado = gestionImagenes.obtenerImagenAlberguePorIndice(id_albergue, index)
+    if not encontrado:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Imagen no encontrada")
+    return Response(content=imagen, media_type="image/jpeg")
 
 @app.put("/trabajo", dependencies=[Depends(validarSesion)])
 def actualizarTrabajo(trabajo: Trabajo):
@@ -250,13 +293,24 @@ def obtener_albergues():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="no se encontraron albergues")
     return lista
 
+@app.get("/albergues/detalle", dependencies=[Depends(validarSesion)])
+def obtener_albergue_por_id(id_albergue: int):
+    detalle, encontrado = gestionAlbergues.obtenerAlbergue(id_albergue)
+    if not encontrado:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="albergue no encontrado")
+    return detalle
+
 @app.put("/albergues", dependencies=[Depends(validarSesion)])
 def actualizar_albergue(albergue: Albergue):
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
+    if not gestionAlbergues.actualizarAlbergue(albergue):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo actualizar el albergue")
+    return {"mensaje": "albergue actualizado correctamente"}
 
 @app.delete("/albergues", dependencies=[Depends(validarSesion)])
 def eliminar_albergue(id_albergue: int):
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
+    if not gestionAlbergues.eliminarAlbergue(id_albergue):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo eliminar el albergue")
+    return {"mensaje": "albergue eliminado correctamente"}
 
 # ==================== COMUNIDAD: MASCOTAS PERDIDAS ====================
 
@@ -273,13 +327,35 @@ def obtener_mascotas_perdidas():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="no se encontraron mascotas perdidas")
     return lista
 
+@app.get("/mascotas_perdidas/mis", dependencies=[Depends(validarSesion)])
+def obtener_mascotas_perdidas_mias(idAnimalLover: int):
+    lista, _ = gestionMasPerdidas.obtenerMascotasPerdidasPorUsuario(idAnimalLover)
+    return lista
+
+@app.get("/mascotas_perdidas/detalle", dependencies=[Depends(validarSesion)])
+def obtener_mascota_perdida_detalle(id_animal: int):
+    detalle, encontrado = gestionMasPerdidas.obtenerMascotaPerdida(id_animal)
+    if not encontrado:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="mascota perdida no encontrada")
+    return detalle
+
 @app.put("/mascotas_perdidas", dependencies=[Depends(validarSesion)])
 def actualizar_mascota_perdida(mascota: AnimalPerdido):
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
+    if not gestionMasPerdidas.actualizarMascotaPerdida(mascota):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo actualizar la mascota perdida")
+    return {"mensaje": "mascota perdida actualizada correctamente"}
+
+@app.post("/mascotas_perdidas/localizado", dependencies=[Depends(validarSesion)])
+def marcar_mascota_localizada(id_animal: int):
+    if not gestionMasPerdidas.marcarMascotaLocalizada(id_animal):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo marcar la mascota como localizada")
+    return {"mensaje": "mascota marcada como localizada"}
 
 @app.delete("/mascotas_perdidas", dependencies=[Depends(validarSesion)])
-def eliminar_mascota_perdida(id_animal_perdido: int):
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
+def eliminar_mascota_perdida(id_animal: int):
+    if not gestionMasPerdidas.eliminarMascotaPerdida(id_animal):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo eliminar la mascota perdida")
+    return {"mensaje": "mascota perdida eliminada correctamente"}
 
 # ==================== COMUNIDAD: ADOPCIONES ====================
 
@@ -296,13 +372,35 @@ def obtener_adopciones():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="no se encontraron adopciones")
     return lista
 
+@app.get("/adopciones/mis", dependencies=[Depends(validarSesion)])
+def obtener_adopciones_mias(idAnimalLover: int):
+    lista, _ = gestionAdopciones.obtenerAdopcionesPorUsuario(idAnimalLover)
+    return lista
+
+@app.get("/adopciones/detalle", dependencies=[Depends(validarSesion)])
+def obtener_adopcion_detalle(id_animal: int):
+    detalle, encontrado = gestionAdopciones.obtenerAdopcion(id_animal)
+    if not encontrado:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="adopcion no encontrada")
+    return detalle
+
 @app.put("/adopciones", dependencies=[Depends(validarSesion)])
 def actualizar_adopcion(adopcion: AnimalCalle):
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
+    if not gestionAdopciones.actualizarAdopcion(adopcion):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo actualizar la adopcion")
+    return {"mensaje": "adopcion actualizada correctamente"}
+
+@app.post("/adopciones/adoptado", dependencies=[Depends(validarSesion)])
+def marcar_adopcion_adoptada(id_animal: int):
+    if not gestionAdopciones.marcarAdopcionAdoptada(id_animal):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo marcar la adopcion como adoptada")
+    return {"mensaje": "adopcion marcada como adoptada"}
 
 @app.delete("/adopciones", dependencies=[Depends(validarSesion)])
-def eliminar_adopcion(id_animal_calle: int):
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="método no implementado aún")
+def eliminar_adopcion(id_animal: int):
+    if not gestionAdopciones.eliminarAdopcion(id_animal):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="no se pudo eliminar la adopcion")
+    return {"mensaje": "adopcion eliminada correctamente"}
 
 def IniciarServidor():
     print("Servidor iniciado en el puerto 40000")

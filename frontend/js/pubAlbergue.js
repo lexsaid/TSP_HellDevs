@@ -2,11 +2,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fotos');
     const imagePreviewContainer = document.getElementById('imagePreview');
     const postForm = document.getElementById('postAlbergueForm');
+    const pageTitle = document.querySelector('h2');
+    const submitButton = postForm ? postForm.querySelector('button[type="submit"]') : null;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('edit');
+    const isEditMode = Boolean(editId);
+    let hasNewImages = false;
 
     // Manejo de la vista previa de las imágenes
     if (fileInput) {
         fileInput.addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
+
+            if (files.length > 0) {
+                hasNewImages = true;
+            }
             
             files.forEach(file => {
                 if (!file.type.startsWith('image/')) return;
@@ -57,17 +68,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Validar que se haya subido al menos una imagen
-            if (imagePreviewContainer.children.length === 0) {
+            if (!isEditMode && imagePreviewContainer.children.length === 0) {
                 alert('Debes subir por lo menos una imagen de las instalaciones.');
                 return;
             }
 
             // Recolectar imágenes en base64 desde el preview
             const imagenesBase64 = [];
-            const previewImgs = imagePreviewContainer.querySelectorAll('.preview-img');
-            previewImgs.forEach(img => {
-                imagenesBase64.push(img.src);
-            });
+            if (hasNewImages) {
+                const previewImgs = imagePreviewContainer.querySelectorAll('.preview-img');
+                previewImgs.forEach(img => {
+                    imagenesBase64.push(img.src);
+                });
+            }
 
             const idAnimalLover = localStorage.getItem('idAnimalLover');
             if (!idAnimalLover) {
@@ -77,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const payload = {
+                idAlbergue: isEditMode ? parseInt(editId) : undefined,
                 idAnimalLover: parseInt(idAnimalLover),
                 nombre: document.getElementById('nombre').value.trim(),
                 ubicacion: document.getElementById('ubicacion').value.trim(),
@@ -89,12 +103,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const response = await window.apiFetch('/albergues', {
-                    method: 'POST',
+                    method: isEditMode ? 'PUT' : 'POST',
                     body: JSON.stringify(payload)
                 });
 
                 if (response && response.ok) {
-                    alert('¡Albergue dado de alta con éxito!');
+                    alert(isEditMode ? 'Albergue actualizado con éxito.' : '¡Albergue dado de alta con éxito!');
+                    if (isEditMode) {
+                        window.location.href = 'mis_albergues.html';
+                        return;
+                    }
                     postForm.reset();
                     if (imagePreviewContainer) {
                         imagePreviewContainer.innerHTML = '';
@@ -110,4 +128,36 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    async function cargarDatosEdicion() {
+        if (!isEditMode) return;
+
+        if (pageTitle) {
+            pageTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Albergue';
+        }
+        if (submitButton) {
+            submitButton.textContent = 'Actualizar albergue';
+        }
+
+        try {
+            const res = await window.apiFetch(`/albergue?id=${editId}`);
+            if (!res || !res.ok) {
+                alert('No se pudo cargar la informacion del albergue.');
+                return;
+            }
+            const detalle = await res.json();
+            const alb = detalle.albergue || {};
+
+            document.getElementById('nombre').value = alb.nombre || '';
+            document.getElementById('ubicacion').value = alb.ubicacion || '';
+            document.getElementById('capacidad').value = alb.capacidad ?? '';
+            document.getElementById('preferencia').value = alb.preferencia || '';
+            document.getElementById('costo_diario').value = alb.costoDiario ?? '';
+            document.getElementById('pre_requisitos').value = alb.preRequisitos || '';
+        } catch (e) {
+            console.error('Error cargando datos de edicion:', e);
+        }
+    }
+
+    cargarDatosEdicion();
 });

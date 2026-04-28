@@ -60,10 +60,12 @@ class Animal(BaseModel):
 class AnimalPerdido(Animal):
     idAnimalPerdido: Optional[int] = None
     recompensa: str
+    estado: Optional[str] = "Activo"
 
 class AnimalCalle(Animal):
     idAnimalCalle: Optional[int] = None
     vacunas: str
+    estado: Optional[str] = "Activo"
 
 class Albergue(BaseModel):
     idAlbergue: Optional[int] = None

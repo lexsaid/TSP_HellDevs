@@ -87,7 +87,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const img = document.createElement('img');
-            img.src = `${window.API_BASE_URL}/trabajo/${chat.idTrabajo}/imagen_index/0`;
+            if (chat.idTrabajo < 0) {
+                if (chat.idTrabajo <= -2000000) {
+                    const idAnimal = -chat.idTrabajo - 2000000;
+                    img.src = `${window.API_BASE_URL}/animal/${idAnimal}/imagen`;
+                } else if (chat.idTrabajo <= -1000000) {
+                    const idAnimal = -chat.idTrabajo - 1000000;
+                    img.src = `${window.API_BASE_URL}/animal/${idAnimal}/imagen`;
+                } else {
+                    const idAlbergue = Math.abs(chat.idTrabajo);
+                    img.src = `${window.API_BASE_URL}/albergue/${idAlbergue}/imagen`;
+                }
+            } else {
+                img.src = `${window.API_BASE_URL}/trabajo/${chat.idTrabajo}/imagen_index/0`;
+            }
             img.style.cssText = "width:50px; height:50px; border-radius:50%; object-fit:cover; margin-right:15px; background:#e2e8f0;";
             img.onerror = () => { img.src = "https://via.placeholder.com/50?text=IMG"; };
 

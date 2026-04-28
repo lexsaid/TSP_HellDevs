@@ -67,11 +67,31 @@ def obtenerChatsPrevios(idUsuario: int) -> tuple[list[dict], bool]:
         if key not in chats_map:
             # Primera vez que vemos esta conversación — es el mensaje más reciente (para fecha)
             user_info, _ = gestionUsuario.buscarUsuario(other_user)
-            trabajo_info, _ = gestionTrabajo.obtenerTrabajo(msj.idTrabajo)
-            
             nombre_usuario = f"{user_info.nombre} {user_info.apellido}" if user_info else "Desconocido"
-            titulo_trabajo = trabajo_info.nombre if trabajo_info else "Trabajo eliminado"
-            
+
+            if msj.idTrabajo < 0:
+                from repositorios import alberguesRepo, mascotasPerdidasRepo, adopcionesRepo
+
+                if msj.idTrabajo <= -2000000:
+                    id_animal = -msj.idTrabajo - 2000000
+                    adopcion_detalle, adopcion_ok = adopcionesRepo.buscarAdopcionPorId(id_animal)
+                    titulo_trabajo = (
+                        adopcion_detalle.adopcion.nombre if adopcion_ok and adopcion_detalle else "Adopcion eliminada"
+                    )
+                elif msj.idTrabajo <= -1000000:
+                    id_animal = -msj.idTrabajo - 1000000
+                    perdida_detalle, perdida_ok = mascotasPerdidasRepo.buscarMascotaPerdidaPorId(id_animal)
+                    titulo_trabajo = (
+                        perdida_detalle.mascotaPerdida.nombre if perdida_ok and perdida_detalle else "Mascota eliminada"
+                    )
+                else:
+                    id_alb = -msj.idTrabajo
+                    alb_detalle, alb_ok = alberguesRepo.buscarAlberguePorId(id_alb)
+                    titulo_trabajo = alb_detalle.albergue.nombre if alb_ok and alb_detalle else "Albergue eliminado"
+            else:
+                trabajo_info, _ = gestionTrabajo.obtenerTrabajo(msj.idTrabajo)
+                titulo_trabajo = trabajo_info.nombre if trabajo_info else "Trabajo eliminado"
+
             chats_map[key] = {
                 "idTrabajo": msj.idTrabajo,
                 "idReceptor": other_user,
@@ -80,6 +100,7 @@ def obtenerChatsPrevios(idUsuario: int) -> tuple[list[dict], bool]:
                 "ultimoMensaje": None,           # Se llenará con el último msj del otro
                 "fechaUltimoMensaje": msj.fechaMensaje  # Fecha del mensaje más reciente (cualquiera)
             }
+
         
         # Llenar el último mensaje de la otra persona (el primero que encontremos con emisor = other_user)
         if chats_map[key]["ultimoMensaje"] is None and msj.idAnimalLoverEmisor == other_user:
@@ -97,3 +118,7 @@ def hayNuevosMensajes(idUsuario: int, ultimoIdMensaje: int) -> bool:
     """Verifica si hay mensajes nuevos enviados A este usuario con id_mensaje mayor al dado."""
     consulta = "SELECT COUNT(*) as total FROM mensajes WHERE id_animalLover_receptor = ? AND id_mensaje > ?"
     return mensajesRepo.contarMensajesNuevos(consulta, idUsuario, ultimoIdMensaje)
+
+
+def eliminarMensajesPorTrabajo(idTrabajo: int) -> bool:
+    return mensajesRepo.eliminarMensajesPorTrabajo(idTrabajo)

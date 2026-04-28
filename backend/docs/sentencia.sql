@@ -53,6 +53,7 @@ CREATE TABLE animalPerdido (
     id_animalPerdido INTEGER PRIMARY KEY,
     id_animal INTEGER NOT NULL,
     recompensa TEXT NOT NULL,
+    estado TEXT NOT NULL DEFAULT 'Activo',
     FOREIGN KEY (id_animal) REFERENCES animal(id_animal)
 );
 
@@ -60,6 +61,7 @@ CREATE TABLE animalCalle (
     id_animalCalle INTEGER PRIMARY KEY,
     id_animal INTEGER NOT NULL,
     vacunas TEXT NOT NULL,
+    estado TEXT NOT NULL DEFAULT 'Activo',
     FOREIGN KEY (id_animal) REFERENCES animal(id_animal)
 );
 

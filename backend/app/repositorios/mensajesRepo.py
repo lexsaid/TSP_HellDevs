@@ -117,3 +117,18 @@ def contarMensajesNuevos(consulta: str, idUsuario: int, ultimoIdMensaje: int) ->
     finally:
         if 'conn' in locals():
             conn.close()
+
+
+def eliminarMensajesPorTrabajo(idTrabajo: int) -> bool:
+    try:
+        conn = getDbConnection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM mensajes WHERE id_trabajo = ?", (idTrabajo,))
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Error al eliminar mensajes por trabajo: {e}")
+        return False
+    finally:
+        if 'conn' in locals():
+            conn.close()

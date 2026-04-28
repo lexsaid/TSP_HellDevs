@@ -2,11 +2,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fotos');
     const imagePreviewContainer = document.getElementById('imagePreview');
     const postForm = document.getElementById('postForm');
+    const pageTitle = document.querySelector('h2');
+    const submitButton = postForm ? postForm.querySelector('button[type="submit"]') : null;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('edit');
+    const isEditMode = Boolean(editId);
+    let hasNewImages = false;
+    let currentEstado = 'Activo';
 
     // Manejo de la vista previa de las imágenes
     if (fileInput) {
         fileInput.addEventListener('change', function (e) {
             const files = Array.from(e.target.files);
+
+            if (files.length > 0) {
+                hasNewImages = true;
+            }
 
             files.forEach(file => {
                 if (!file.type.startsWith('image/')) return;
@@ -58,17 +70,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Validar que se haya subido al menos una imagen
-            if (imagePreviewContainer.children.length === 0) {
+            if (!isEditMode && imagePreviewContainer.children.length === 0) {
                 alert('Debes subir por lo menos una imagen de la mascota.');
                 return;
             }
 
             // Recolectar imágenes en base64 desde el preview
             const imagenesBase64 = [];
-            const previewImgs = imagePreviewContainer.querySelectorAll('.preview-img');
-            previewImgs.forEach(img => {
-                imagenesBase64.push(img.src);
-            });
+            if (hasNewImages) {
+                const previewImgs = imagePreviewContainer.querySelectorAll('.preview-img');
+                previewImgs.forEach(img => {
+                    imagenesBase64.push(img.src);
+                });
+            }
 
             const idAnimalLover = localStorage.getItem('idAnimalLover');
             if (!idAnimalLover) {
@@ -78,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const payload = {
+                idAnimal: isEditMode ? parseInt(editId) : undefined,
                 idAnimalLover: parseInt(idAnimalLover),
                 nombre: document.getElementById('nombre').value.trim(),
                 tipoAnimal: document.getElementById('tipo_animal').value,
@@ -88,17 +103,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 discapacidad: document.getElementById('discapacidad').value.trim(),
                 detallesAdicionales: document.getElementById('detalles_adicionales').value.trim(),
                 recompensa: document.getElementById('recompensa').value.trim() || '0',
-                imagenesBase64: imagenesBase64
+                imagenesBase64: imagenesBase64,
+                estado: currentEstado
             };
 
             try {
                 const response = await window.apiFetch('/mascotas_perdidas', {
-                    method: 'POST',
+                    method: isEditMode ? 'PUT' : 'POST',
                     body: JSON.stringify(payload)
                 });
 
                 if (response && response.ok) {
-                    alert('¡Reporte de mascota perdida publicado con éxito!');
+                    alert(isEditMode ? 'Reporte actualizado con éxito.' : '¡Reporte de mascota perdida publicado con éxito!');
+                    if (isEditMode) {
+                        window.location.href = 'mis_mascotas_perdidas.html';
+                        return;
+                    }
                     postForm.reset();
                     if (imagePreviewContainer) {
                         imagePreviewContainer.innerHTML = '';
@@ -114,4 +134,40 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    async function cargarDatosEdicion() {
+        if (!isEditMode) return;
+
+        if (pageTitle) {
+            pageTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Mascota Perdida';
+        }
+        if (submitButton) {
+            submitButton.textContent = 'Actualizar Reporte';
+        }
+
+        try {
+            const res = await window.apiFetch(`/mascotas_perdidas/detalle?id_animal=${editId}`);
+            if (!res || !res.ok) {
+                alert('No se pudo cargar la informacion de la mascota.');
+                return;
+            }
+            const detalle = await res.json();
+            const data = detalle.mascotaPerdida || {};
+            currentEstado = data.estado || 'Activo';
+
+            document.getElementById('nombre').value = data.nombre || '';
+            document.getElementById('tipo_animal').value = data.tipoAnimal || '';
+            document.getElementById('tamanio').value = data.tamanio || '';
+            document.getElementById('color').value = data.color || '';
+            document.getElementById('edad').value = data.edad ?? '';
+            document.getElementById('direccion').value = data.direccion || '';
+            document.getElementById('discapacidad').value = data.discapacidad || '';
+            document.getElementById('detalles_adicionales').value = data.detallesAdicionales || '';
+            document.getElementById('recompensa').value = data.recompensa || '';
+        } catch (e) {
+            console.error('Error cargando datos de edicion:', e);
+        }
+    }
+
+    cargarDatosEdicion();
 });
