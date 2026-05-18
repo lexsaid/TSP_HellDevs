@@ -3,7 +3,7 @@ CREATE TABLE animalLover (
 	id_animalLover	INTEGER  PRIMARY KEY AUTOINCREMENT,
 	nombre	TEXT NOT NULL,
 	apellido	TEXT NOT NULL,
-	email	TEXT NOT NULL,
+	email	TEXT NOT NULL UNIQUE,
 	telefono	TEXT NOT NULL UNIQUE,
 	contraseña	TEXT NOT NULL,
 	token	TEXT
