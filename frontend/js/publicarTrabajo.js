@@ -100,6 +100,22 @@ document.getElementById('postForm').addEventListener('submit', async (e) => {
     const desc = document.getElementById('descTrabajo').value;
     const montoStr = document.getElementById('montoTrabajo').value;
     const ubicacion = document.getElementById('ubicacionTrabajo').value;
+    const monto = Number(montoStr);
+
+    if (!tipo) {
+        alert('Debes seleccionar un tipo de trabajo.');
+        return;
+    }
+
+    if (montoStr === '' || Number.isNaN(monto) || monto < 0) {
+        alert('La recompensa debe ser un número mayor o igual a 0.');
+        return;
+    }
+
+    if (!ubicacion.trim()) {
+        alert('La ubicación es obligatoria.');
+        return;
+    }
 
     const myIdStr = localStorage.getItem('idAnimalLover');
     if (!myIdStr) {
@@ -110,9 +126,9 @@ document.getElementById('postForm').addEventListener('submit', async (e) => {
 
     const trabajo = {
         nombre: titulo,
-        ubicacion: ubicacion || 'Sin ubicación',
+        ubicacion: ubicacion.trim(),
         fechaPublicacion: window.getFormattedDateMX(),
-        monto: parseFloat(montoStr) || 0,
+        monto: monto,
         descripcion: desc,
         idAnimalLoverPublicador: parseInt(myIdStr),
         tipoTrabajo: tipo,

@@ -1,4 +1,4 @@
-from manejadores import gestionMensajes
+from manejadores import manejadorMensajes
 from modelos.modelos import Mensaje
 
 
@@ -15,10 +15,10 @@ def test_guardar_y_listar_mensajes(seed_user, seed_trabajo):
         contenido="Hola",
         fechaMensaje="2024-01-01",
     )
-    gestionMensajes.guardarMensaje(mensaje)
+    manejadorMensajes.guardarMensaje(mensaje)
 
     # Act
-    mensajes, ok = gestionMensajes.obtenerListaMensajes(emisor.idAnimalLover, receptor.idAnimalLover, trabajo_id)
+    mensajes, ok = manejadorMensajes.obtenerListaMensajes(emisor.idAnimalLover, receptor.idAnimalLover, trabajo_id)
 
     # Assert
     assert ok is True
@@ -88,10 +88,10 @@ def test_obtener_chats_previos_cubre_negativos(seed_user, seed_trabajo, seed_alb
         ),
     ]
     for msg in mensajes:
-        gestionMensajes.guardarMensaje(msg)
+        manejadorMensajes.guardarMensaje(msg)
 
     # Act
-    chats, ok = gestionMensajes.obtenerChatsPrevios(usuario.idAnimalLover)
+    chats, ok = manejadorMensajes.obtenerChatsPrevios(usuario.idAnimalLover)
 
     # Assert
     assert ok is True
@@ -112,10 +112,10 @@ def test_hay_nuevos_mensajes(seed_user, seed_trabajo):
         contenido="Nuevo",
         fechaMensaje="2024-01-01",
     )
-    gestionMensajes.guardarMensaje(mensaje)
+    manejadorMensajes.guardarMensaje(mensaje)
 
     # Act
-    hay = gestionMensajes.hayNuevosMensajes(receptor.idAnimalLover, 0)
+    hay = manejadorMensajes.hayNuevosMensajes(receptor.idAnimalLover, 0)
 
     # Assert
     assert hay is True

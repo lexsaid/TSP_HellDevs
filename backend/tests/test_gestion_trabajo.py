@@ -1,6 +1,6 @@
 import base64
 
-from manejadores import gestionTrabajo
+from manejadores import manejadorTrabajo
 from modelos.modelos import Trabajo
 
 
@@ -23,8 +23,8 @@ def test_crear_y_obtener_trabajo_con_imagen(seed_user, fetch_scalar):
     )
 
     # Act
-    ok = gestionTrabajo.crearTrabajo(trabajo)
-    trabajo_db, found = gestionTrabajo.obtenerTrabajo(1)
+    ok = manejadorTrabajo.crearTrabajo(trabajo)
+    trabajo_db, found = manejadorTrabajo.obtenerTrabajo(1)
     imagenes = fetch_scalar("SELECT COUNT(*) FROM imagen WHERE id_trabajo = ?", (1,))
 
     # Assert
@@ -47,8 +47,8 @@ def test_actualizar_trabajo_reemplaza_imagenes(seed_user, fetch_scalar):
         tipoTrabajo="Servicio",
         imagenesBase64=[_sample_b64(b"a")],
     )
-    gestionTrabajo.crearTrabajo(trabajo)
-    trabajo_db, _ = gestionTrabajo.obtenerTrabajo(1)
+    manejadorTrabajo.crearTrabajo(trabajo)
+    trabajo_db, _ = manejadorTrabajo.obtenerTrabajo(1)
 
     actualizado = Trabajo(
         idTrabajo=trabajo_db.idTrabajo,
@@ -63,7 +63,7 @@ def test_actualizar_trabajo_reemplaza_imagenes(seed_user, fetch_scalar):
     )
 
     # Act
-    ok = gestionTrabajo.actualizarTrabajo(actualizado)
+    ok = manejadorTrabajo.actualizarTrabajo(actualizado)
     imagenes = fetch_scalar("SELECT COUNT(*) FROM imagen WHERE id_trabajo = ?", (trabajo_db.idTrabajo,))
 
     # Assert
@@ -91,7 +91,7 @@ def test_eliminar_trabajo_elimina_dependencias(seed_user, seed_trabajo, fetch_sc
     )
 
     # Act
-    ok = gestionTrabajo.eliminarTrabajo(trabajo_id)
+    ok = manejadorTrabajo.eliminarTrabajo(trabajo_id)
     imagenes = fetch_scalar("SELECT COUNT(*) FROM imagen WHERE id_trabajo = ?", (trabajo_id,))
     mensajes = fetch_scalar("SELECT COUNT(*) FROM mensajes WHERE id_trabajo = ?", (trabajo_id,))
     aceptados = fetch_scalar("SELECT COUNT(*) FROM trabajo_aceptado WHERE id_trabajo = ?", (trabajo_id,))
@@ -109,7 +109,7 @@ def test_obtener_todos_los_trabajos(seed_trabajo):
     seed_trabajo(nombre="T2")
 
     # Act
-    trabajos, ok = gestionTrabajo.obtenerTodosLosTrabajos()
+    trabajos, ok = manejadorTrabajo.obtenerTodosLosTrabajos()
 
     # Assert
     assert ok is True

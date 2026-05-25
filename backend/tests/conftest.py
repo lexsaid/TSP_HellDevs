@@ -63,7 +63,7 @@ def fetch_scalar(db_path):
 
 @pytest.fixture()
 def seed_user(db_path):
-    from manejadores import gestionUsuario
+    from manejadores import manejadorUsuario
     from modelos.modelos import AnimalLover
     from repositorios import usuarioRepo
 
@@ -75,7 +75,7 @@ def seed_user(db_path):
             telefono=telefono,
             **{"contraseña": contrasena},
         )
-        ok = gestionUsuario.guardarUsuario(user)
+        ok = manejadorUsuario.guardarUsuario(user)
         if not ok:
             raise RuntimeError("No se pudo insertar usuario")
         saved, _ = usuarioRepo.buscarPorEmail(email)

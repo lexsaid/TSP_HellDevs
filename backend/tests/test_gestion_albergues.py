@@ -1,6 +1,6 @@
 import base64
 
-from manejadores import gestionAlbergues
+from manejadores import manejadorAlbergues
 from modelos.modelos import Albergue
 
 
@@ -23,8 +23,8 @@ def test_crear_y_obtener_albergue_con_imagen(seed_user, fetch_scalar):
     )
 
     # Act
-    ok = gestionAlbergues.crearAlbergue(albergue)
-    detalle, found = gestionAlbergues.obtenerAlbergue(1)
+    ok = manejadorAlbergues.crearAlbergue(albergue)
+    detalle, found = manejadorAlbergues.obtenerAlbergue(1)
     imagenes = fetch_scalar("SELECT COUNT(*) FROM imagen_albergue WHERE id_albergue = ?", (1,))
 
     # Assert
@@ -47,7 +47,7 @@ def test_actualizar_albergue_reemplaza_imagenes(seed_user, fetch_scalar):
         preRequisitos="Req",
         imagenesBase64=[_img_b64(b"a")],
     )
-    gestionAlbergues.crearAlbergue(albergue)
+    manejadorAlbergues.crearAlbergue(albergue)
 
     actualizado = Albergue(
         idAlbergue=1,
@@ -62,7 +62,7 @@ def test_actualizar_albergue_reemplaza_imagenes(seed_user, fetch_scalar):
     )
 
     # Act
-    ok = gestionAlbergues.actualizarAlbergue(actualizado)
+    ok = manejadorAlbergues.actualizarAlbergue(actualizado)
     imagenes = fetch_scalar("SELECT COUNT(*) FROM imagen_albergue WHERE id_albergue = ?", (1,))
 
     # Assert
@@ -82,7 +82,7 @@ def test_eliminar_albergue_borra_mensajes(seed_user, fetch_scalar):
         costoDiario=35,
         preRequisitos="Req",
     )
-    gestionAlbergues.crearAlbergue(albergue)
+    manejadorAlbergues.crearAlbergue(albergue)
 
     id_trabajo_chat = -1
     fetch_scalar(
@@ -91,7 +91,7 @@ def test_eliminar_albergue_borra_mensajes(seed_user, fetch_scalar):
     )
 
     # Act
-    ok = gestionAlbergues.eliminarAlbergue(1)
+    ok = manejadorAlbergues.eliminarAlbergue(1)
     mensajes = fetch_scalar("SELECT COUNT(*) FROM mensajes WHERE id_trabajo = ?", (id_trabajo_chat,))
 
     # Assert

@@ -1,6 +1,6 @@
 import base64
 
-from manejadores import gestionAdopciones
+from manejadores import manejadorAdopciones
 from modelos.modelos import AnimalCalle
 
 
@@ -26,8 +26,8 @@ def test_publicar_y_obtener_adopcion(seed_user, fetch_scalar):
     )
 
     # Act
-    ok = gestionAdopciones.publicarAdopcion(adopcion)
-    detalle, found = gestionAdopciones.obtenerAdopcion(1)
+    ok = manejadorAdopciones.publicarAdopcion(adopcion)
+    detalle, found = manejadorAdopciones.obtenerAdopcion(1)
     imagenes = fetch_scalar("SELECT COUNT(*) FROM imagen_animal WHERE id_animal = ?", (1,))
 
     # Assert
@@ -53,7 +53,7 @@ def test_actualizar_adopcion_reemplaza_imagenes(seed_user, fetch_scalar):
         vacunas="Basicas",
         imagenesBase64=[_img_b64(b"a")],
     )
-    gestionAdopciones.publicarAdopcion(adopcion)
+    manejadorAdopciones.publicarAdopcion(adopcion)
 
     actualizada = AnimalCalle(
         idAnimal=1,
@@ -71,7 +71,7 @@ def test_actualizar_adopcion_reemplaza_imagenes(seed_user, fetch_scalar):
     )
 
     # Act
-    ok = gestionAdopciones.actualizarAdopcion(actualizada)
+    ok = manejadorAdopciones.actualizarAdopcion(actualizada)
     imagenes = fetch_scalar("SELECT COUNT(*) FROM imagen_animal WHERE id_animal = ?", (1,))
 
     # Assert
@@ -94,7 +94,7 @@ def test_marcar_adoptado_y_eliminar(seed_user, fetch_scalar):
         detallesAdicionales="Det",
         vacunas="Basicas",
     )
-    gestionAdopciones.publicarAdopcion(adopcion)
+    manejadorAdopciones.publicarAdopcion(adopcion)
 
     id_trabajo_chat = -2000000 - 1
     fetch_scalar(
@@ -103,8 +103,8 @@ def test_marcar_adoptado_y_eliminar(seed_user, fetch_scalar):
     )
 
     # Act
-    adoptado = gestionAdopciones.marcarAdopcionAdoptada(1)
-    eliminado = gestionAdopciones.eliminarAdopcion(1)
+    adoptado = manejadorAdopciones.marcarAdopcionAdoptada(1)
+    eliminado = manejadorAdopciones.eliminarAdopcion(1)
     mensajes = fetch_scalar("SELECT COUNT(*) FROM mensajes WHERE id_trabajo = ?", (id_trabajo_chat,))
 
     # Assert

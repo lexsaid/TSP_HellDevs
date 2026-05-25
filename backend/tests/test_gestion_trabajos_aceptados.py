@@ -1,4 +1,4 @@
-from manejadores import gestionTrabajosAceptados
+from manejadores import manejadorTrabajosAceptados
 from modelos.modelos import TrabajoAceptado
 
 
@@ -7,7 +7,7 @@ def test_verificar_trabajo_aceptado_sin_registros(seed_trabajo):
     trabajo_id = seed_trabajo(nombre="SinAceptado")
 
     # Act
-    resultado = gestionTrabajosAceptados.verificarTrabajoAceptado(trabajo_id)
+    resultado = manejadorTrabajosAceptados.verificarTrabajoAceptado(trabajo_id)
 
     # Assert
     assert resultado == {"aceptado": False, "completado": False}
@@ -23,10 +23,10 @@ def test_verificar_trabajo_aceptado_con_pendiente(seed_trabajo, seed_user):
         fechaAceptacion="2024-01-01",
         estadoTrabajo="Pendiente",
     )
-    gestionTrabajosAceptados.aceptarTrabajo(trabajo)
+    manejadorTrabajosAceptados.aceptarTrabajo(trabajo)
 
     # Act
-    resultado = gestionTrabajosAceptados.verificarTrabajoAceptado(trabajo_id)
+    resultado = manejadorTrabajosAceptados.verificarTrabajoAceptado(trabajo_id)
 
     # Assert
     assert resultado == {"aceptado": True, "completado": False}
@@ -42,10 +42,10 @@ def test_completar_trabajo_marca_terminado(seed_trabajo, seed_user, fetch_scalar
         fechaAceptacion="2024-01-01",
         estadoTrabajo="Pendiente",
     )
-    gestionTrabajosAceptados.aceptarTrabajo(trabajo)
+    manejadorTrabajosAceptados.aceptarTrabajo(trabajo)
 
     # Act
-    ok = gestionTrabajosAceptados.completarTrabajoPorPublicador(trabajo_id)
+    ok = manejadorTrabajosAceptados.completarTrabajoPorPublicador(trabajo_id)
     estado = fetch_scalar(
         "SELECT estado_trabajo FROM trabajo_aceptado WHERE id_trabajo = ?",
         (trabajo_id,),

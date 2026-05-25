@@ -1,6 +1,6 @@
 import base64
 
-from manejadores import gestionImagenes, gestionMasPerdidas, gestionAlbergues
+from manejadores import manejadorImagenes, manejadorMasPerdidas, manejadorAlbergues
 from modelos.modelos import AnimalPerdido, Albergue
 
 
@@ -24,13 +24,13 @@ def test_obtener_imagen_animal_y_contador(seed_user):
         recompensa="100",
         imagenesBase64=[_img_b64(), _img_b64(b"x")],
     )
-    gestionMasPerdidas.reportarMascotaPerdida(mascota)
+    manejadorMasPerdidas.reportarMascotaPerdida(mascota)
 
     # Act
-    imagen, ok = gestionImagenes.obtenerImagenAnimal(1)
-    info = gestionImagenes.obtenerInfoImagenesAnimal(1)
-    imagen2, ok2 = gestionImagenes.obtenerImagenAnimalPorIndice(1, 1)
-    imagen_bad, ok_bad = gestionImagenes.obtenerImagenAnimalPorIndice(1, -1)
+    imagen, ok = manejadorImagenes.obtenerImagenAnimal(1)
+    info = manejadorImagenes.obtenerInfoImagenesAnimal(1)
+    imagen2, ok2 = manejadorImagenes.obtenerImagenAnimalPorIndice(1, 1)
+    imagen_bad, ok_bad = manejadorImagenes.obtenerImagenAnimalPorIndice(1, -1)
 
     # Assert
     assert ok is True
@@ -55,12 +55,12 @@ def test_obtener_imagen_albergue_y_contador(seed_user):
         preRequisitos="Req",
         imagenesBase64=[_img_b64()],
     )
-    gestionAlbergues.crearAlbergue(albergue)
+    manejadorAlbergues.crearAlbergue(albergue)
 
     # Act
-    imagen, ok = gestionImagenes.obtenerImagenAlbergue(1)
-    info = gestionImagenes.obtenerInfoImagenesAlbergue(1)
-    imagen_bad, ok_bad = gestionImagenes.obtenerImagenAlberguePorIndice(1, -1)
+    imagen, ok = manejadorImagenes.obtenerImagenAlbergue(1)
+    info = manejadorImagenes.obtenerInfoImagenesAlbergue(1)
+    imagen_bad, ok_bad = manejadorImagenes.obtenerImagenAlberguePorIndice(1, -1)
 
     # Assert
     assert ok is True

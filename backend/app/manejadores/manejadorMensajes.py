@@ -1,5 +1,5 @@
 from repositorios import mensajesRepo
-from manejadores import gestionUsuario
+from manejadores import manejadorUsuario
 from modelos.modelos import Mensaje
 
 def guardarMensaje(mensaje: Mensaje) -> bool:
@@ -23,8 +23,8 @@ def obtenerListaMensajes(idUsuario: int, idOtroUsuario: int, idTrabajo: int) -> 
     
     listaFinal = []
     for msj in mensajes:
-        remitente, _ = gestionUsuario.buscarUsuario(msj.idAnimalLoverEmisor)
-        receptor, _ = gestionUsuario.buscarUsuario(msj.idAnimalLoverReceptor)
+        remitente, _ = manejadorUsuario.buscarUsuario(msj.idAnimalLoverEmisor)
+        receptor, _ = manejadorUsuario.buscarUsuario(msj.idAnimalLoverReceptor)
         
         nombreRemitente = f"{remitente.nombre} {remitente.apellido}" if remitente else "Desconocido"
         nombreReceptor = f"{receptor.nombre} {receptor.apellido}" if receptor else "Desconocido"
@@ -51,7 +51,7 @@ def eliminarMensaje(idMensaje: int) -> bool:
     return mensajesRepo.eliminarMensaje(consulta, idMensaje)
 
 def obtenerChatsPrevios(idUsuario: int) -> tuple[list[dict], bool]:
-    from manejadores import gestionTrabajo
+    from manejadores import manejadorTrabajo
     consulta = "SELECT * FROM mensajes WHERE id_animalLover_emisor = ? OR id_animalLover_receptor = ? ORDER BY fecha_mensaje DESC"
     mensajes, ok = mensajesRepo.buscarMensajesPorUsuario(consulta, idUsuario)
     if not ok:
@@ -66,7 +66,7 @@ def obtenerChatsPrevios(idUsuario: int) -> tuple[list[dict], bool]:
         
         if key not in chats_map:
             # Primera vez que vemos esta conversación — es el mensaje más reciente (para fecha)
-            user_info, _ = gestionUsuario.buscarUsuario(other_user)
+            user_info, _ = manejadorUsuario.buscarUsuario(other_user)
             nombre_usuario = f"{user_info.nombre} {user_info.apellido}" if user_info else "Desconocido"
 
             if msj.idTrabajo < 0:
@@ -89,7 +89,7 @@ def obtenerChatsPrevios(idUsuario: int) -> tuple[list[dict], bool]:
                     alb_detalle, alb_ok = alberguesRepo.buscarAlberguePorId(id_alb)
                     titulo_trabajo = alb_detalle.albergue.nombre if alb_ok and alb_detalle else "Albergue eliminado"
             else:
-                trabajo_info, _ = gestionTrabajo.obtenerTrabajo(msj.idTrabajo)
+                trabajo_info, _ = manejadorTrabajo.obtenerTrabajo(msj.idTrabajo)
                 titulo_trabajo = trabajo_info.nombre if trabajo_info else "Trabajo eliminado"
 
             chats_map[key] = {

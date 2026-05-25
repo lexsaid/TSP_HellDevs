@@ -1,6 +1,6 @@
 from repositorios import alberguesRepo
 from repositorios.imagenAlbergueRepo import ImagenAlbergueRepo
-from manejadores import gestionMensajes
+from manejadores import manejadorMensajes
 from modelos.modelos import Albergue, AlbergueDetalle
 from repositorios.database import getDbConnection
 import base64
@@ -72,6 +72,6 @@ def eliminarAlbergue(id_albergue: int) -> bool:
         return False
 
     id_trabajo_chat = -id_albergue
-    gestionMensajes.eliminarMensajesPorTrabajo(id_trabajo_chat)
+    manejadorMensajes.eliminarMensajesPorTrabajo(id_trabajo_chat)
     ImagenAlbergueRepo.eliminarImagenesPorAlbergue(id_albergue)
     return alberguesRepo.eliminarAlbergue(id_albergue)

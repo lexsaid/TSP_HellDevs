@@ -1,6 +1,6 @@
 import base64
 
-from manejadores import gestionMasPerdidas
+from manejadores import manejadorMasPerdidas
 from modelos.modelos import AnimalPerdido
 
 
@@ -26,8 +26,8 @@ def test_reportar_y_obtener_mascota(seed_user, fetch_scalar):
     )
 
     # Act
-    ok = gestionMasPerdidas.reportarMascotaPerdida(mascota)
-    detalle, found = gestionMasPerdidas.obtenerMascotaPerdida(1)
+    ok = manejadorMasPerdidas.reportarMascotaPerdida(mascota)
+    detalle, found = manejadorMasPerdidas.obtenerMascotaPerdida(1)
     imagenes = fetch_scalar("SELECT COUNT(*) FROM imagen_animal WHERE id_animal = ?", (1,))
 
     # Assert
@@ -53,7 +53,7 @@ def test_actualizar_mascota_reemplaza_imagenes(seed_user, fetch_scalar):
         recompensa="150",
         imagenesBase64=[_img_b64(b"a")],
     )
-    gestionMasPerdidas.reportarMascotaPerdida(mascota)
+    manejadorMasPerdidas.reportarMascotaPerdida(mascota)
 
     actualizada = AnimalPerdido(
         idAnimal=1,
@@ -71,7 +71,7 @@ def test_actualizar_mascota_reemplaza_imagenes(seed_user, fetch_scalar):
     )
 
     # Act
-    ok = gestionMasPerdidas.actualizarMascotaPerdida(actualizada)
+    ok = manejadorMasPerdidas.actualizarMascotaPerdida(actualizada)
     imagenes = fetch_scalar("SELECT COUNT(*) FROM imagen_animal WHERE id_animal = ?", (1,))
 
     # Assert
@@ -94,7 +94,7 @@ def test_marcar_localizada_y_eliminar(seed_user, fetch_scalar):
         detallesAdicionales="Det",
         recompensa="0",
     )
-    gestionMasPerdidas.reportarMascotaPerdida(mascota)
+    manejadorMasPerdidas.reportarMascotaPerdida(mascota)
 
     id_trabajo_chat = -1000000 - 1
     fetch_scalar(
@@ -103,8 +103,8 @@ def test_marcar_localizada_y_eliminar(seed_user, fetch_scalar):
     )
 
     # Act
-    localizado = gestionMasPerdidas.marcarMascotaLocalizada(1)
-    eliminado = gestionMasPerdidas.eliminarMascotaPerdida(1)
+    localizado = manejadorMasPerdidas.marcarMascotaLocalizada(1)
+    eliminado = manejadorMasPerdidas.eliminarMascotaPerdida(1)
     mensajes = fetch_scalar("SELECT COUNT(*) FROM mensajes WHERE id_trabajo = ?", (id_trabajo_chat,))
 
     # Assert

@@ -1,6 +1,6 @@
 from repositorios import mascotasPerdidasRepo
 from repositorios.imagenAnimalRepo import ImagenAnimalRepo
-from manejadores import gestionMensajes
+from manejadores import manejadorMensajes
 from modelos.modelos import AnimalPerdido, MascotaPerdidaDetalle
 from repositorios.database import getDbConnection
 import base64
@@ -81,5 +81,5 @@ def eliminarMascotaPerdida(id_animal: int) -> bool:
         return False
 
     id_trabajo_chat = -1000000 - id_animal
-    gestionMensajes.eliminarMensajesPorTrabajo(id_trabajo_chat)
+    manejadorMensajes.eliminarMensajesPorTrabajo(id_trabajo_chat)
     return mascotasPerdidasRepo.eliminarMascotaPerdida(id_animal)

@@ -1,6 +1,6 @@
 from repositorios import adopcionesRepo
 from repositorios.imagenAnimalRepo import ImagenAnimalRepo
-from manejadores import gestionMensajes
+from manejadores import manejadorMensajes
 from modelos.modelos import AnimalCalle, AdopcionDetalle
 from repositorios.database import getDbConnection
 import base64
@@ -81,5 +81,5 @@ def eliminarAdopcion(id_animal: int) -> bool:
         return False
 
     id_trabajo_chat = -2000000 - id_animal
-    gestionMensajes.eliminarMensajesPorTrabajo(id_trabajo_chat)
+    manejadorMensajes.eliminarMensajesPorTrabajo(id_trabajo_chat)
     return adopcionesRepo.eliminarAdopcion(id_animal)
