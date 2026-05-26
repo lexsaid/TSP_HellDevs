@@ -49,7 +49,7 @@ def client(db_path, monkeypatch):
 @pytest.fixture()
 def seed_user(db_path):
     """Permite crear un usuario rápidamente en la BD de pruebas."""
-    from manejadores import gestionUsuario
+    from manejadores import manejadorUsuario
     from modelos.modelos import AnimalLover
     from repositorios import usuarioRepo
 
@@ -69,10 +69,43 @@ def seed_user(db_path):
             telefono=telefono,
             **{"contraseña": contrasena},
         )
-        ok = gestionUsuario.guardarUsuario(user)
+        ok = manejadorUsuario.guardarUsuario(user)
         if not ok:
             raise RuntimeError(f"No se pudo insertar usuario: {email}, {telefono}")
         saved, _ = usuarioRepo.buscarPorEmail(email)
         return saved
 
     return _seed_user
+
+
+@pytest.fixture()
+def seed_trabajo(db_path, seed_user):
+    """Permite crear un trabajo rápidamente en la BD de pruebas."""
+    from repositorios import trabajoRepo
+    from modelos.modelos import Trabajo
+
+    counter = count(1)
+
+    def _seed_trabajo(nombre="Paseo", id_publicador=None, tipo="Servicio"):
+        if id_publicador is None:
+            idx = next(counter)
+            user = seed_user(
+                email=f"publicador{idx}@example.com",
+                telefono=f"11{idx:08d}",
+            )
+            id_publicador = user.idAnimalLover
+
+        trabajo = Trabajo(
+            nombre=nombre,
+            ubicacion="CDMX",
+            fechaPublicacion="2024-01-01",
+            monto=100.0,
+            descripcion="Descripcion",
+            idAnimalLoverPublicador=id_publicador,
+            tipoTrabajo=tipo,
+        )
+        consulta = "INSERT INTO trabajo (nombre, ubicacion, fecha_publicacion, monto, descripcion, id_animalLover_publicador, tipo_trabajo) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        trabajo_id = trabajoRepo.guardarTrabajo(consulta, trabajo)
+        return trabajo_id
+
+    return _seed_trabajo

@@ -2,6 +2,7 @@ import base64
 from pytest_bdd import scenarios, given, when, then, parsers
 from fastapi import status
 from enrutador import AuthMiddleware
+from manejadores import manejadorTrabajo
 
 scenarios("flujo_2_trabajos.feature")
 

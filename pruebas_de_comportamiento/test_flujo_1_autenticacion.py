@@ -1,5 +1,6 @@
 from pytest_bdd import scenarios, given, when, then, parsers
 from fastapi import status
+from manejadores import manejadorUsuario
 
 # Cargar los escenarios del feature
 scenarios("flujo_1_autenticacion.feature")
